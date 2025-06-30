@@ -1,4 +1,4 @@
-# Product Performance Insights: Análisis Histórico de Vistas, Inversión y Conversión
+# Product Performance Insights: Análisis Histórico de Vistas, Inversión y Conversión de un Ecommerce
 
 Este proyecto analiza el rendimiento de productos de un ecommerce a través de la integración de múltiples fuentes de datos. 
 
