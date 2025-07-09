@@ -1,12 +1,12 @@
-# Product Performance Insights – Análisis de productos impulsados por campañas de publicidad digital
+# Ecommerce Performance Insights – Proyecto integral de análisis de datos
 
 
 
-## 📍 Pregunta principal del Negocio
+## 📍 Preguntas principales del Negocio
 
 
 
-## 🎯 Objetivo del proyecto
+## 🎯 Objetivos del proyecto
 
 
 
