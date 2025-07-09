@@ -60,7 +60,7 @@ El análisis completo se encuentra en el archivo [`product-performance-insights.
 
 ## 👤 Autor
 
-**Ángel García**  
+**Angel García**  
 Analista de Datos | Lima, Perú  
 👤 Perfil profesional: 🔗 [LinkedIn](https://www.linkedin.com/in/angelgarciachanga)  
 🎥 Canal educativo: [@angelgarciadatablog](https://youtube.com/@angelgarciadatablog)  
