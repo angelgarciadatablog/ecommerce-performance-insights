@@ -27,21 +27,21 @@ la inversión publicitaria (Facebook Ads y Google Ads) hasta el inventario dispo
 - **SQL** – Extracción y manipulación de datos.
 - **Google Analytics 4** – Métricas de comportamiento de usuarios.
 - **Facebook Ads y Google Ads** – Datos de inversión por producto.
-- **Jupyter Notebook** – Documentación del análisis, consultas y visualizaciones.
-- **GitHub** – Control de versiones y publicación del proyecto.
 
 
 ## 🗂️ Estructura del repositorio
 ```plaintext
 product-performance-insights-sql/
-├── README.md               # Descripción general del proyecto
-├── notebook.ipynb          # Análisis completo con consultas y visualizaciones
-├── sql/                    # Consultas SQL reutilizables
-│   └── consultas.sql
-├── img/                    # Gráficos y visuales del análisis
+├── README.md                        # Descripción general del repositorio
+├── analisis/                        # Análisis completo con consultas y visualizaciones
+│   └── product-performance-insights.md
+├── consultas/                       # Consultas SQL reutilizables o intermedias
+│   └── consulta_product_performance.sql
+├── images/                          # Gráficos y visuales del análisis
 │   └── grafico1.png
-└── data/                   # Archivos de muestra o datasets reducidos
-    └── muestras.csv
+└── dashboard/                       # Presentación gráfica del dashboard
+    └── product-performance-insights.md
+
 ```
 
 
@@ -52,9 +52,9 @@ product-performance-insights-sql/
 - Identificar oportunidades comerciales por categoría o tipo de producto, priorizando aquellos con alto potencial de conversión y rentabilidad.
 
 
-## 📓 Notebook interactivo
+## 📓 Análisis detallado 
 
-El análisis completo se encuentra en el archivo `notebook.ipynb`, donde se explican paso a paso las consultas realizadas, los datos integrados y las conclusiones extraídas.
+El análisis completo se encuentra en el archivo [`product-performance-insights.md`](analisis/product-performance-insights.md), donde se explican paso a paso las consultas realizadas, los datos integrados y las conclusiones extraídas.
 
 
 
