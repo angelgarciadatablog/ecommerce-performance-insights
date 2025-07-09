@@ -35,8 +35,8 @@ ecommerce-performance-insights/
 ├── README.md                         # Descripción general del proyecto integral
 ├── 1-product-performance-insight/    # Análisis de productos y campañas
 │   ├── README.md                      
-│   ├── analisis/
-│   ├── consultas/
+│   ├── analysis/
+│   ├── queries/
 │   ├── images/
 │   └── dashboard/
 ```
