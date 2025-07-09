@@ -29,19 +29,16 @@ la inversión publicitaria (Facebook Ads y Google Ads) hasta el inventario dispo
 - **Facebook Ads y Google Ads** – Datos de inversión por producto.
 
 
-## 🗂️ Estructura del repositorio
+## 🗂️ Estructura del proyecto
 ```plaintext
-product-performance-insights-sql/
-├── README.md                        # Descripción general del repositorio
-├── analisis/                        # Análisis completo con consultas y visualizaciones
-│   └── product-performance-insights.md
-├── consultas/                       # Consultas SQL reutilizables o intermedias
-│   └── consulta_product_performance.sql
-├── images/                          # Gráficos y visuales del análisis
-│   └── grafico1.png
-└── dashboard/                       # Presentación gráfica del dashboard
-    └── product-performance-insights.md
-
+ecommerce-performance-insights/
+├── README.md                         # Descripción general del proyecto integral
+├── 1-product-performance-insight/    # Análisis de productos y campañas
+│   ├── README.md                      
+│   ├── analisis/
+│   ├── consultas/
+│   ├── images/
+│   └── dashboard/
 ```
 
 
@@ -54,7 +51,7 @@ product-performance-insights-sql/
 
 ## 📓 Análisis detallado 
 
-El análisis completo se encuentra en el archivo [`product-performance-insights.md`](analisis/product-performance-insights.md), donde se explican paso a paso las consultas realizadas, los datos integrados y las conclusiones extraídas.
+El análisis completo se encuentra en el archivo [`product-performance-insights.md`](product-performance-insights/analisis), donde se explican paso a paso las consultas realizadas, los datos integrados y las conclusiones extraídas.
 
 
 
