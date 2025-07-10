@@ -41,7 +41,7 @@ ecommerce-performance-insights/       # Descripción general del proyecto integr
 
 ## 📈 Resultados esperados
 
-- btener una visión 360° del rendimiento de cada producto evaluando los eventos de conversión (vistas, carritos, checkouts y compras).
+- Obtener una visión 360° del rendimiento de cada producto evaluando los eventos de conversión (vistas, carritos, checkouts y compras).
 - Detectar productos con alto interés pero baja conversión, proponiendo acciones correctivas como cambios de precio, promociones o mejoras en la ficha de producto.
 - Identificar oportunidades por categoría, priorizando productos con alto potencial de conversión y rotación.
 
@@ -50,6 +50,12 @@ ecommerce-performance-insights/       # Descripción general del proyecto integr
 
 El análisis completo se encuentra en el archivo [`product-performance-insights.md`](product-performance-insights/analisis), donde se explican paso a paso las consultas realizadas, los datos integrados y las conclusiones extraídas.
 
+## 📈 Dashboard Interactivo
+
+Consulta el dashboard interactivo desarrollado en Looker Studio:  
+🔗 [Ver en línea](https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7)
+
+> Este dashboard permite visualizar el funnel de conversión por producto, analizar patrones de comportamiento y tomar decisiones con base en los datos de GA4 procesados en BigQuery.
 
 
 ## 👤 Autor
