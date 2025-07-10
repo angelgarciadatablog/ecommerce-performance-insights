@@ -123,8 +123,27 @@ FROM
 )
 GROUP BY 
   item_id
+),
+
+item_link AS 
+
+(
+  SELECT
+  items.item_id AS item_id,
+  ANY_VALUE((SELECT value.string_value FROM UNNEST(event_params) WHERE KEY = 'page_location'))AS link
+FROM
+  `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`,
+    UNNEST(items) AS items
+WHERE
+    REGEXP_EXTRACT(_TABLE_SUFFIX, r"[0-9]+") BETWEEN 
+    FORMAT_DATE("%Y%m%d", "2020-11-01")AND 
+    FORMAT_DATE("%Y%m%d", current_date()) 
+    AND items.item_id <> '(not set)'
+GROUP BY
+  items.item_id
 )
-  
+
+
 
 SELECT
   t1.date,
@@ -137,7 +156,8 @@ SELECT
   t1.add_to_cart,
   t1.begin_checkout,
   t1.purchase_item,
-  t1.revenue_item
+  t1.revenue_item,
+  t5.link
 
 FROM
   product_performance t1
@@ -147,8 +167,8 @@ LEFT JOIN item_brand t3
 ON t1.item_id = t3.item_id
 LEFT JOIN item_category t4
 ON t1.item_id = t4.item_id
-
-
+LEFT JOIN item_link t5
+ON t1.item_id = t5.item_id
 
 
 
