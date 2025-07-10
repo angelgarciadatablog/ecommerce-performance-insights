@@ -1,22 +1,21 @@
 # Product Performance Insights – Análisis de productos impulsados por campañas de publicidad digital
 
-Este proyecto analiza el rendimiento de productos de un ecommerce a través de la integración de múltiples fuentes de datos. 
+Este proyecto analiza el rendimiento de productos de un ecommerce a través de eventos de conversión.
 
-Se combinan métricas de comportamiento del usuario (vistas de producto, agregados al carrito y compras) obtenidas desde Google Analytics 4 a través de BigQuery, 
-con la inversión publicitaria registrada en Facebook Ads y Google Ads, ambas a nivel de producto.
+Se analizan las métricas de comportamiento del usuario a nivel de producto (vistas de producto, agregados al carrito y compras) obtenidas desde Google Analytics 4 a través de BigQuery.
 
 Gracias a esta integración, se construye una vista unificada que permite obtener insights tanto a nivel de producto como por categoría, 
 con el objetivo de optimizar decisiones comerciales y de inversión publicitaria.
 
 ## 📍 Pregunta principal del Negocio
-¿La inversión publicitaria en Facebook Ads y Google Ads está siendo asignada a los productos correctos?
+¿Los productos más vistos son los que generan mayores ingresos?
 
 
 ## 🎯 Objetivo del proyecto
 1. **Evaluar el ciclo completo del producto**: desde las vistas,  agregados al carrito y compras (Google Analytics), 
 la inversión publicitaria (Facebook Ads y Google Ads) hasta el inventario disponible, los descuentos aplicados y su categorización.
 
-2. **Medir la eficiencia publicitaria**: identificando productos con alta inversión y baja conversión para detectar ineficiencias y oportunidades de optimización en las campañas.
+2. **Medir la eficiencia de productos**: identificando productos con alta y baja visuzalición y comparandolos con sus ventas para detectar ineficiencias y oportunidades de optimización en las campañas.
 
 3. **Generar insights accionables**: por producto y por categoría, que permitan mejorar decisiones comerciales, ajustar estrategias de marketing y priorizar productos según su rentabilidad y comportamiento real.
 
@@ -26,8 +25,7 @@ la inversión publicitaria (Facebook Ads y Google Ads) hasta el inventario dispo
 - **BigQuery** – Almacenamiento y análisis de grandes volúmenes de datos.
 - **SQL** – Extracción y manipulación de datos.
 - **Google Analytics 4** – Métricas de comportamiento de usuarios.
-- **Facebook Ads y Google Ads** – Datos de inversión por producto.
-
+- **Looker Studio** – Visualización de reporte
 
 ## 🗂️ Estructura del proyecto
 ```plaintext
@@ -44,8 +42,8 @@ ecommerce-performance-insights/
 
 ## 📈 Resultados esperados
 
-- Obtener una visión 360° del rendimiento de cada producto, combinando datos de comportamiento, inversión publicitaria y atributos internos como inventario y descuentos.
-- Detectar ineficiencias en campañas publicitarias, como productos con alta inversión y baja conversión; y proponer acciones correctivas basadas en datos.
+- Obtener una visión 360° del rendimiento de cada producto evaluando los eventos de conversión.
+- Detectar ineficiencias en campañas publicitarias, como productos con alta visualización y baja conversión; y proponer acciones correctivas basadas en datos.
 - Identificar oportunidades comerciales por categoría o tipo de producto, priorizando aquellos con alto potencial de conversión y rentabilidad.
 
 
