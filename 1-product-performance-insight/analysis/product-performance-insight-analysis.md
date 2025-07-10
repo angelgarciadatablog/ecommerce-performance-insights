@@ -30,7 +30,7 @@ Este documento detalla el proceso técnico del análisis, incluyendo las fuentes
 
 La siguiente consulta construye la **tabla maestra** que alimenta el dashboard final:
 
-> 📁 Archivo fuente: [`queries/consulta_product_performance.sql`](../queries/rendimiento-producto-ga4-big-query.sql)
+> 📁 Query Completa: [`queries/consulta_product_performance.sql`](../queries/rendimiento-producto-ga4-big-query.sql)
 
 ```sql
 -- Fragmento ilustrativo
