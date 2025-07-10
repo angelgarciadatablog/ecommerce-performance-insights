@@ -28,14 +28,14 @@ con el objetivo de optimizar decisiones comerciales basadas en comportamiento re
 
 ## 🗂️ Estructura del proyecto
 ```plaintext
-ecommerce-performance-insights/
-├── README.md                         # Descripción general del proyecto integral
-├── 1-product-performance-insight/    # Análisis de productos y campañas
-│   ├── README.md                      
-│   ├── analysis/
-│   ├── queries/
-│   ├── images/
-│   └── dashboard/
+ecommerce-performance-insights/       # Descripción general del proyecto integral
+├── README.md                         
+├── 1-product-performance-insight/    
+│   ├── README.md                     # Descripción general del módulo
+│   ├── analysis/                     # Desarrollo, lógica y hallazgos
+│   ├── queries/                      # Consultas SQL
+│   ├── images/                       # Soporte visual
+│   └── dashboard/                    # Archivos relacionados a visualización interactiva
 ```
 
 
