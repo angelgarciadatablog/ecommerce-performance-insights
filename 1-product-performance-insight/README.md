@@ -48,7 +48,7 @@ ecommerce-performance-insights/       # Descripción general del proyecto integr
 
 ## 📓 Análisis detallado 
 
-El análisis completo se encuentra en el archivo [`product-performance-insights.md`](product-performance-insights/analisis), donde se explican paso a paso las consultas realizadas, los datos integrados y las conclusiones extraídas.
+El análisis completo se encuentra en el archivo [`product-performance-insight-analysis.md`](analysis/product-performance-insight-analysis.md) donde se explican paso a paso las consultas realizadas, los datos integrados y las conclusiones extraídas.
 
 ## 📈 Dashboard Interactivo
 
