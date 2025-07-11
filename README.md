@@ -22,19 +22,13 @@
 ```plaintext
 ecommerce-performance-insights/
 ├── README.md                         # Descripción general del proyecto integral
-├── 1-product-performance-insight/    # Análisis de productos y campañas publicitarias
+├── 1-product-performance-insight/    # Análisis de rendimiento por producto de un ecommerce
 │   ├── README.md                      
 │   ├── analisis/
 │   ├── consultas/
 │   ├── images/
 │   └── dashboard/
-├── 2-product-performance-tiempo-real/ # Análisis en tiempo real del comportamiento de productos
-│   ├── README.md
-│   ├── analisis/
-│   ├── consultas/
-│   ├── images/
-│   └── dashboard/
-├── 3-ecommerce-analytics-comercial/  # Rendimiento general del ecommerce y análisis comercial
+├── 2-ecommerce-analytics-comercial/  # Rendimiento general del ecommerce y análisis comercial
 │   ├── README.md
 │   ├── analisis/
 │   ├── consultas/
