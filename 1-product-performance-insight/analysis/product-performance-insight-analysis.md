@@ -81,8 +81,9 @@ A continuación, algunos gráficos utilizados para obtener insights clave a part
 
 | Visualización | Descripción |
 |---------------|-------------|
-| ![Gráfico 1](../images/grafico1.png) | Relación entre inversión publicitaria y compras por producto. Permite detectar productos con alto gasto y baja conversión. |
-| ![Gráfico 2](../images/grafico2.png) | Funnel de conversión: vistas de producto → agregados al carrito → compras. Ayuda a identificar cuellos de botella en el proceso. |
+| ![Gráfico 1](../images/insight_1.png) | Hay un perido del 26 al 17 de enero en cual hubo aumento de vistas de producto que no estaban acorde al aumento de las ventas de los mismos. |
+| ![Gráfico 2](../images/insight_2.png) | Las categorías Men's T-Shirts, Mug, Sale, Clearance, Eco-friendly, Small goods y Backpacks entan dentro del top 10 de productos vistos, sin embargo, no generan revenue |
+| ![Gráfico 3](../images/insight_3.png) | La categoría Appareal es la que genera mayor revenue, sin embargo, no es la que tiene mayor cantidad de vistas. |
 
 > 🖼️ Las imágenes se encuentran en la carpeta [`images/`](../images/).
 
