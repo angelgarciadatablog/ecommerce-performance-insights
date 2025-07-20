@@ -81,9 +81,9 @@ A continuación, algunos gráficos utilizados para obtener insights clave a part
 
 | Visualización | Descripción |
 |---------------|-------------|
-| ![Gráfico 1](../images/insight_1.png) | Hay un perido del 26 al 17 de enero en cual hubo aumento de vistas de producto que no estaban acorde al aumento de las ventas de los mismos. |
-| ![Gráfico 2](../images/insight_2.png) | Las categorías Men's T-Shirts, Mug, Sale, Clearance, Eco-friendly, Small goods y Backpacks entan dentro del top 10 de productos vistos, sin embargo, no generan revenue |
-| ![Gráfico 3](../images/insight_3.png) | La categoría Appareal es la que genera mayor revenue, sin embargo, no es la que tiene mayor cantidad de vistas. |
+| ![Gráfico 1](../images/insight_1.png) | Entre el 26 de diciembre y el 17 de enero se observó un aumento significativo en las vistas de productos que no estuvo acompañado por un incremento proporcional en las ventas. |
+| ![Gráfico 2](../images/insight_2.png) | Las categorías Men's T-Shirts, Mug, Sale, Clearance, Eco-friendly, Small goods y Backpacks están dentro del top 10 de productos más vistos, pero no generan ingresos. |
+| ![Gráfico 3](../images/insight_3.png) | La categoría Apparel es la que genera más revenue, sin embargo, no es la que recibe más vistas. |
 
 > 🖼️ Las imágenes se encuentran en la carpeta [`images/`](../images/).
 
@@ -91,9 +91,15 @@ A continuación, algunos gráficos utilizados para obtener insights clave a part
 
 ## 5. 🧭 Hallazgos clave
 
-- **Desajuste entre inversión y conversión**: Se identificaron productos con alta inversión pero baja tasa de conversión (ej. *Zapatilla X*).
-- **Categorías con mayor eficiencia**: Algunos segmentos, como *Accesorios*, lograron mejores resultados con menor inversión.
-- **Productos con alto rendimiento orgánico**: Detectados productos con bajo gasto publicitario y alta conversión, lo que sugiere potencial para ampliar presupuesto.
+- **Desajuste entre visualizaciones y conversión**: Durante la campaña de fin de año (26 de diciembre al 17 de enero), se registró un incremento en vistas de productos que no derivaron en ventas. Se recomienda evaluar cuáles son esos productos con alto tráfico pero baja conversión y ajustar la inversión publicitaria de acuerdo a su potencial real.
+- **Tráfico alto en categorías con bajo rendimiento**: Algunas categorías reciben gran cantidad de vistas pero no generan ingresos. Es recomendable revisar si:
+  - Están vendiendo a través de otros canales (ej. tienda física).
+  - Presentan problemas de inventario o disponibilidad.  
+  En caso de baja disponibilidad o falta de conversión, se sugiere reducir su exposición en la web (ej. despriorizarlos en publicidad o incluso ocultarlos si no tienen potencial de conversión).
+- **Oportunidad en la categoría más rentable**: La categoría Apparel genera el mayor revenue, pero no es la más vista. Se recomienda reforzar su visibilidad mediante estrategias como:
+  - Ubicar sus productos en la página de inicio.
+  - Activar pop-ups o banners.
+  - Incluirla en correos, stories, y campañas pagadas.
 
 ---
 
