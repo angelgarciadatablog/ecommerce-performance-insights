@@ -17,7 +17,7 @@ Se realiza una exploración detallada sobre:
 
 # 🗂 Fuente de datos
 
-Los datos utilizados son simulados y provienen de una tienda ficticia creada en Shopify, con el objetivo de representar un caso realista. Este enfoque permite que los análisis realizados puedan aplicarse o adaptarse a cualquier tienda en esa misma plataforma.
+Los datos utilizados son simulados y provienen de una tienda ficticia creada en Shopify, con el objetivo de representar un caso realista. Este enfoque permite que el análisis realizado pueda aplicarse o adaptarse a cualquier tienda en esa misma plataforma.
 
 Los datos se obtienen con campos estándar mediante una exportación manual de pedidos desde la plataforma de Shopify.
 
