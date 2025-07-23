@@ -54,7 +54,7 @@ ecommerce-performance-insight/       # Descripción general del proyecto integra
 
 ## 📓 Análisis detallado 
 
-El análisis completo se encuentra en el archivo [`ecommerce-analytics-comercial-analysis.md`](analysis/ecommerce-analytics-comercial-analysis.md) donde se explican paso a paso el análisis realizado
+El análisis completo se encuentra en el archivo [`ecommerce-analytics-comercial-analysis.md`](analysis/ecommerce-analytics-comercial-analysis.md) donde se describen paso a paso las exploraciones realizadas, los hallazgos obtenidos y las interpretaciones clave del rendimiento comercial del ecommerce.
 
 
 ## 📈 Dashboard Interactivo
