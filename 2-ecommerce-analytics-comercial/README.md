@@ -10,6 +10,7 @@ El propósito de este informe es identificar patrones de compra, anomalías y ev
 
 Se realiza una exploración detallada sobre:
 
+- Comparación de ventas respecto al año anterior
 - Artículos vendidos con y sin descuento
 - Comportamiento por categorías de productos
 - Uso de cupones promocionales (BIENVENIDA, SUERTE, CYBER)
@@ -18,7 +19,9 @@ Se realiza una exploración detallada sobre:
 
 # 🗂 Fuente de datos
 
-Los datos utilizados en este análisis provienen de una exportación manual desde la plataforma de Shopify, respetando el formato estándar que incluye información sobre pedidos, productos, precios, clientes, cupones y fechas de compra en una sola tabla
+Los datos utilizados son simulados y provienen de una tienda ficticia creada en Shopify, con el objetivo de representar un caso realista. Este enfoque permite que los análisis realizados puedan aplicarse o adaptarse a cualquier tienda en esa misma plataforma.
+
+Los datos se obtienen con campos estándar mediante una exportación manual de pedidos desde la plataforma de Shopify.
 
 
 > 🔜 En una siguiente etapa, se conectará directamente con la API REST de Shopify para automatizar la recolección de datos y eliminar la dependencia de las exportaciones manuales.
@@ -26,29 +29,35 @@ Los datos utilizados en este análisis provienen de una exportación manual desd
 ## 🛠️ Herramientas y tecnologías
 
 - **Shopify** – Extracción de datos
+- **BigQuery** – Almacenamiento de datos.
 - **Looker Studio** – Visualización de reporte
 
 
 ## 🗂️ Estructura del proyecto
 ```plaintext
-ecommerce-performance-insights/       # Descripción general del proyecto integral
+ecommerce-performance-insight/       # Descripción general del proyecto integral
 ├── README.md                         
-├── 1-product-performance-insight/    
+├── 2-ecommerce-analysis-comercial/    
 │   ├── README.md                     # Descripción general del módulo
 │   ├── analysis/                     # Desarrollo, lógica y hallazgos
-│   ├── queries/                      # Consultas SQL
 │   ├── images/                       # Soporte visual
 │   └── dashboard/                    # Archivos relacionados a visualización interactiva
 ```
 
 ## 📈 Resultados esperados
 
-- A
+- Tendencias de crecimiento o caída en las ventas respecto al mismo periodo del año anterior.
+- Qué porcentaje de ventas proviene de productos con descuento y cómo estos influyen en el negocio
+- Las categorías de productos con mejor desempeño para priorizar stock y promociones.
+- El cupón más efectivo en términos de cantidad de pedidos generados.
+- Las tallas más vendidas según género, ayudando a optimizar inventario y segmentación.
+- Las regiones o ciudades con mayor concentración de pedidos, lo cual puede guiar estrategias logísticas o campañas localizadas.
 
 
 ## 📓 Análisis detallado 
 
-AAA
+
+
 
 ## 📈 Dashboard Interactivo
 
