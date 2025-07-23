@@ -1,10 +1,8 @@
 # Ecommerce Analytics Comercial- Análisis de rendimiento comercial de un ecommerce
 
-Este proyecto tiene como objetivo analizar el rendimiento comercial de un ecommerce creado con Shopify a partir de datos de pedidos.
-
 # 🎯 Objetivo del proyecto
 
-El propósito de este informe es identificar patrones de compra, anomalías y eventos recurrentes en la operación comercial del ecommerce, brindando así información útil para la toma de decisiones estratégicas.
+Este proyecto tiene como objetivo analizar el rendimiento comercial de un ecommerce creado con Shopify, a partir de datos de pedidos, con el fin de identificar patrones de compra, anomalías y eventos recurrentes que permitan brindar información útil para la toma de decisiones estratégicas.
 
 ## 📈 Descripción del análisis
 
@@ -56,12 +54,13 @@ ecommerce-performance-insight/       # Descripción general del proyecto integra
 
 ## 📓 Análisis detallado 
 
-
+El análisis completo se encuentra en el archivo [`ecommerce-analytics-comercial-analysis.md`](analysis/ecommerce-analytics-comercial-analysis.md) donde se explican paso a paso el análisis realizado
 
 
 ## 📈 Dashboard Interactivo
 
-AAA
+Consulta el dashboard interactivo desarrollado en Looker Studio:  
+🔗 [Ver en línea](https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7)
 
 
 ## 👤 Autor
