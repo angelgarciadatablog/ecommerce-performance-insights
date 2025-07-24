@@ -61,7 +61,7 @@ El análisis completo se encuentra en el archivo [`ecommerce-analytics-comercial
 ## 📈 Dashboard Interactivo
 
 Consulta el dashboard interactivo desarrollado en Looker Studio:  
-🔗 [Ver en línea]([https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7](https://lookerstudio.google.com/reporting/feceecaa-0ba9-4750-8b55-0ab20da5a5b8))
+🔗 [Ver en línea](https://lookerstudio.google.com/reporting/feceecaa-0ba9-4750-8b55-0ab20da5a5b8)
 
 
 ## 👤 Autor
