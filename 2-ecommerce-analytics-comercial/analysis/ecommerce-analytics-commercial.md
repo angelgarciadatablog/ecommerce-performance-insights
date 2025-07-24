@@ -1,4 +1,4 @@
-# Análisis técnico – Product Performance Insights
+# Análisis técnico – Ecommerce Analytics Comercial
 
 Este documento detalla el proceso técnico del análisis, incluyendo las fuentes de datos, lógica aplicada en SQL, construcción de la tabla maestra y hallazgos principales que alimentan el dashboard final.
 
@@ -19,8 +19,8 @@ Este documento detalla el proceso técnico del análisis, incluyendo las fuentes
 ![limpieza de datos](../images/image_2.1.png)
 | Elemento                                                                    | Descripción                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Izquierda** – *Tabla original (`descarga de ordenes shopify CSV`)* | Muestra la estructura cruda de la tabla proporcionada por Google. Cada fila representa un evento individual, con parámetros anidados en campos complejos como `event_params`, `user_properties` o `items`. Esta forma es ideal para almacenamiento pero difícil de analizar directamente.                                                                                                                                                                                     |
-| **Derecha** – *Tabla procesada en big query*  | Presenta el resultado tras aplicar una limpieza y transformación en BigQuery. Los datos han sido desanidados y agregados por producto y fecha, permitiendo un análisis mucho más sencillo. Se muestran métricas clave como vistas de producto (`view_item`), agregados al carrito (`add_to_cart`), inicios de checkout, compras (`purchase`) y revenue, junto con información de producto como `item_id`, `item_name`, `item_brand`, `item_category` y un enlace al producto. |
+| **Izquierda** – *Tabla original (`descarga de ordenes shopify CSV`)* | Descripción                                                                                                                                                                                 |
+| **Derecha** – *Tabla procesada en big query*  | Descripción |
 
 
 ---
