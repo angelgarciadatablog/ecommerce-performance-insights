@@ -27,7 +27,7 @@ Los datos se obtienen con campos estándar mediante una exportación manual de p
 ## 🛠️ Herramientas y tecnologías
 
 - **Shopify** – Extracción de datos
-- **BigQuery** – Almacenamiento de datos.
+- **BigQuery** – Almacenamiento y limpieza de datos
 - **Looker Studio** – Visualización de reporte
 
 
@@ -38,6 +38,7 @@ ecommerce-performance-insight/       # Descripción general del proyecto integra
 ├── 2-ecommerce-analysis-comercial/    
 │   ├── README.md                     # Descripción general del módulo
 │   ├── analysis/                     # Desarrollo, lógica y hallazgos
+│   ├── queries/                      # Consultas SQL
 │   ├── images/                       # Soporte visual
 │   └── dashboard/                    # Archivos relacionados a visualización interactiva
 ```
@@ -60,7 +61,7 @@ El análisis completo se encuentra en el archivo [`ecommerce-analytics-comercial
 ## 📈 Dashboard Interactivo
 
 Consulta el dashboard interactivo desarrollado en Looker Studio:  
-🔗 [Ver en línea](https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7)
+🔗 [Ver en línea]([https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7](https://lookerstudio.google.com/reporting/feceecaa-0ba9-4750-8b55-0ab20da5a5b8))
 
 
 ## 👤 Autor
