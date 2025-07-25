@@ -17,10 +17,12 @@ Este documento detalla el proceso técnico del análisis, incluyendo las fuentes
 ## 2. 🧠 Transformación de la tabla GA4 en BigQuery
 
 ![limpieza de datos](../images/image_2.1.png)
-| Elemento                                                                    | Descripción                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Izquierda** – *Tabla original (`descarga de ordenes shopify CSV`)* | Descripción                                                                                                                                                                                 |
-| **Derecha** – *Tabla procesada en big query*  | Descripción |
+| Elemento | Descripción |
+|----------|-------------|
+| **Izquierda** – *Tabla original (`descarga de órdenes Shopify CSV`)* | Archivo CSV exportado manualmente desde Shopify que contiene todas las órdenes generadas por la tienda. Representa la fuente de datos en bruto antes de cualquier transformación o limpieza. |
+| **Derecha** – *Tabla `Shopify_Orders` (nivel de orden)* | Tabla procesada en BigQuery donde cada fila representa una orden individual. Incluye información general como el ID de orden, cliente, fecha, total pagado, estado de pago, uso de cupones y ciudad de destino. Ideal para análisis a nivel de compra. |
+| **Derecha** – *Tabla `Shopify_Orders_Items` (nivel de producto)* | Tabla procesada en BigQuery donde cada fila representa un producto específico vendido dentro de una orden. Contiene detalles como nombre del producto, SKU, cantidad, precio, talla, categoría, y si tuvo descuento. Esta estructura permite análisis detallados a nivel de artículo. |
+
 
 
 ---
@@ -32,7 +34,7 @@ La siguiente consulta construye la **tabla maestra** que alimenta el dashboard f
 > 📁 Query Completa: [`queries/consulta_product_performance.sql`](../queries/rendimiento-producto-ga4-big-query.sql)
 
 ```sql
--- Fragmento ilustrativo
+-- Shopify Orders
   SELECT
     # fecha
     PARSE_DATE('%Y%m%d', event_date) AS date,
