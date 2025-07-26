@@ -27,54 +27,98 @@ Este documento detalla el proceso técnico del análisis, incluyendo las fuentes
 
 ---
 
-## 3. 🧮 Consulta SQL principal
+## 3.🔄 Flujo de trabajo
 
-La siguiente consulta construye la **tabla maestra** que alimenta el dashboard final:
+1. Se descargó manualmente un archivo `.csv` con las órdenes desde la plataforma de Shopify.
+2. Este archivo fue cargado como una tabla física en BigQuery, ubicada en la ruta:  
+   `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
+3. A partir de esta tabla base se construyeron dos tablas procesadas (almacenadas en una vista) mediante consultas SQL:
+   - `Shopify_Orders`: tabla con un registro por orden.
+   - `Shopify_Orders_Items`: tabla con un registro por producto vendido.
+4. Estas dos vistas son las que alimentan el dashboard final en Looker Studio.
 
-> 📁 Query Completa: [`queries/consulta_product_performance.sql`](../queries/rendimiento-producto-ga4-big-query.sql)
+   
+
+## 3. 🧮 Consultas SQL
+
+Las siguientes consultas construyen las tablas que alimentan el dashboard final:
+
+> 📁 Archivo `.csv` original (órdenes de Shopify) y resultados en formato `.csv` de ambas consultas (para práctica o visualización rápida): [`queries/consulta_product_performance.sql`](../queries/rendimiento-producto-ga4-big-query.sql)
 
 ```sql
 -- Shopify Orders
-  SELECT
-    # fecha
-    PARSE_DATE('%Y%m%d', event_date) AS date,
-
-    # item_id
-    items.item_id AS item_id,
-
-    # view_item
-    SUM(CASE WHEN event_name = 'view_item' THEN IFNULL(items.quantity, 1) ELSE 0 END) AS view_item,
-
-    # add_to_cart  
-    SUM(CASE WHEN event_name = 'add_to_cart' THEN IFNULL(items.quantity, 1) ELSE 0 END) AS add_to_cart,
-
-    # begin_checkout
-    SUM(CASE WHEN event_name = 'begin_checkout' THEN IFNULL(items.quantity, 1) ELSE 0 END) AS begin_checkout,
-
-    # purchase_item
-    SUM(CASE WHEN event_name = 'purchase' THEN IFNULL(items.quantity, 1) ELSE 0 END) AS purchase_item,
-
-    # revenue_item
-    SUM(CASE WHEN event_name = 'purchase' THEN items.item_revenue ELSE 0 END) AS revenue_item,
-
-  
-  FROM
-    `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`,
-    UNNEST(items) AS items
-  WHERE
-      REGEXP_EXTRACT(_TABLE_SUFFIX, r"[0-9]+") BETWEEN 
-      FORMAT_DATE("%Y%m%d", "2020-11-01")AND 
-      FORMAT_DATE("%Y%m%d", current_date()) 
-      AND items.item_id <> '(not set)'
-
-  GROUP BY
-  
-    #fecha
-    PARSE_DATE('%Y%m%d', event_date),
-
-    # item_id
-    item_id
+SELECT
+  DATE(`Created at`) AS date,
+  EXTRACT(HOUR FROM `Created at`) AS hour,
+  Name AS order_id, 
+  Email AS user_id,
+  `Financial Status` AS financial_status,
+  `Billing City` AS billing_city,
+  `Payment Method` AS payment_method,
+   NULLIF(TRIM(`Discount Code`), '') AS discount_code
+FROM
+  `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
+GROUP BY
+  DATE(`Created at`),
+  EXTRACT(HOUR FROM `Created at`),
+  Name, 
+  Email,
+  `Financial Status`,
+  `Billing City`,
+  `Payment Method`,
+  `Discount Code`
 ```
+
+```sql
+-- Shopify Orders Items
+SELECT
+  DATE(`Created at`) AS date,
+  EXTRACT(HOUR FROM `Created at`) AS hour,
+  Name AS order_id, 
+  Email AS user_id,
+  `Financial Status` AS financial_status,
+  `Lineitem sku` AS lineitem_sku,
+  REGEXP_EXTRACT(`Lineitem name`, r'^(.*?) -') AS lineitem_name,
+   REGEXP_EXTRACT(`Lineitem name`, r' - ([A-Z]+)$') AS lineitem_variant,
+   REGEXP_EXTRACT(`Lineitem name`, r' - (.+?) - [A-Z]+$') AS color,
+   CASE
+      WHEN lower(`Lineitem name`) like '%hombre%' THEN 'Hombre'
+      WHEN lower(`Lineitem name`) like '%mujer%' THEN 'Mujer'
+      ELSE 'Unisex'
+    END AS genero,
+   REGEXP_EXTRACT(`Lineitem name`, r'^([^\s]+)') AS categoria,
+   `Lineitem quantity` AS lineitem_quantity,
+   round(`Lineitem price`) AS lineitem_price,
+   round(`Lineitem quantity`*`Lineitem price`) AS lineitem_total,
+  `Lineitem compare at price` AS lineitem_compare_at_price,
+   COALESCE(round(`Lineitem compare at price`-`Lineitem price`),0) AS lineitem_discount,
+   COALESCE(round((`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100,2),0) AS lineitem_percent_discount,
+  CASE
+    WHEN (`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100 >69 THEN 'Descuento mayor a 70%'
+    WHEN (`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100 >59 THEN'Descuento entre 60% y 70%'
+    WHEN (`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100 >49 THEN'Descuento entre 50% y 60%'
+    WHEN (`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100 >39 THEN'Descuento entre 40% y 50%'
+    WHEN (`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100 >29 THEN'Descuento entre 30% y 40%'
+    WHEN (`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100 >19 THEN 'Descuento entre 20% y 30%'
+    WHEN (`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100 >9 THEN'Descuento entre 10% y 20%'
+    ELSE 'Sin descuento'
+  END AS range_discount,
+
+  IF(
+    COALESCE(round(`Lineitem compare at price`-`Lineitem price`),0) > 0, 'Con descuento','Sin descuento'
+  ) AS discount_filter,
+  IF(
+    `Lineitem compare at price` IS NOT NULL,`Lineitem quantity`, 0
+  ) AS con_descuento_items,
+    IF(
+    `Lineitem compare at price` IS NULL,`Lineitem quantity`, 0
+  ) AS sin_descuento_items
+
+FROM
+  `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
+
+```
+
 
 ## 4. 📊 Visualizaciones y gráficos
 
@@ -82,9 +126,9 @@ A continuación, algunos gráficos utilizados para obtener insights clave a part
 
 | Visualización | Descripción |
 |---------------|-------------|
-| ![Gráfico 1](../images/insight_1.png) | Entre el 26 de diciembre y el 17 de enero se observó un aumento significativo en las vistas de productos que no estuvo acompañado por un incremento proporcional en las ventas. |
-| ![Gráfico 2](../images/insight_2.png) | Las categorías Men's T-Shirts, Mug, Sale, Clearance, Eco-friendly, Small goods y Backpacks están dentro del top 10 de productos más vistos, pero no generan ingresos. |
-| ![Gráfico 3](../images/insight_3.png) | La categoría Apparel es la que genera más revenue, sin embargo, no es la que recibe más vistas. |
+| ![Gráfico 1](../images/insight_1.png) | Descripcion |
+| ![Gráfico 2](../images/insight_2.png) | Descripcion |
+| ![Gráfico 3](../images/insight_3.png) | Descripcion |
 
 > 🖼️ Las imágenes se encuentran en la carpeta [`images/`](../images/).
 
@@ -92,15 +136,7 @@ A continuación, algunos gráficos utilizados para obtener insights clave a part
 
 ## 5. 🧭 Hallazgos clave
 
-- **Desajuste entre visualizaciones y conversión**: Durante la campaña de fin de año (26 de diciembre al 17 de enero), se registró un incremento en vistas de productos que no derivaron en ventas. Se recomienda evaluar cuáles son esos productos con alto tráfico pero baja conversión y ajustar la inversión publicitaria de acuerdo a su potencial real.
-- **Tráfico alto en categorías con bajo rendimiento**: Algunas categorías reciben gran cantidad de vistas pero no generan ingresos. Es recomendable revisar si:
-  - Están vendiendo a través de otros canales (ej. tienda física).
-  - Presentan problemas de inventario o disponibilidad.  
-  En caso de baja disponibilidad o falta de conversión, se sugiere reducir su exposición en la web (ej. despriorizarlos en publicidad o incluso ocultarlos si no tienen potencial de conversión).
-- **Oportunidad en la categoría más rentable**: La categoría Apparel genera el mayor revenue, pero no es la más vista. Se recomienda reforzar su visibilidad mediante estrategias como:
-  - Ubicar sus productos en la página de inicio.
-  - Activar pop-ups o banners.
-  - Incluirla en correos, stories, y campañas pagadas.
+-Descripcion
 
 ---
 
