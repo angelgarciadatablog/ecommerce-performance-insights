@@ -1,3 +1,4 @@
+-- Shopify Orders Items
 SELECT
   DATE(`Created at`) AS date,
   EXTRACT(HOUR FROM `Created at`) AS hour,
@@ -15,8 +16,8 @@ SELECT
     END AS genero,
    REGEXP_EXTRACT(`Lineitem name`, r'^([^\s]+)') AS categoria,
    `Lineitem quantity` AS lineitem_quantity,
-   round(`Lineitem price`) AS lineitem_price,
-   round(`Lineitem quantity`*`Lineitem price`) AS lineitem_total,
+   round(`Lineitem price`,2) AS lineitem_price,
+   round(`Lineitem quantity`*`Lineitem price`,2) AS lineitem_total,
   `Lineitem compare at price` AS lineitem_compare_at_price,
    COALESCE(round(`Lineitem compare at price`-`Lineitem price`),0) AS lineitem_discount,
    COALESCE(round((`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100,2),0) AS lineitem_percent_discount,
