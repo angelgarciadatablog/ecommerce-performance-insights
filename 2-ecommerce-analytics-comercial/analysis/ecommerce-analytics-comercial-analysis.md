@@ -8,7 +8,7 @@ Este documento detalla el proceso técnico del análisis, incluyendo las fuentes
 
 | Plataforma | Tipo de fuente     | Granularidad        | Descripción                                                                                                                                                                                                                     | ID de tabla                                                        |
 |------------|--------------------|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
-| Shopify   | Ordenes (descarga csv) | orden por cliente  | Descripción | `prueba2-433703.dataset_shopify_orders_download.shopify_orders`     |
+| Shopify   | Ordenes (descarga csv) | orden por cliente  | todas las órdenes generadas por la tienda | `prueba2-433703.dataset_shopify_orders_download.shopify_orders`     |
 
 > 🔜 En una siguiente etapa, se conectará directamente con la API REST de Shopify para automatizar la recolección de datos y eliminar la dependencia de las exportaciones manuales.
 
