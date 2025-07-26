@@ -144,7 +144,7 @@ A continuación, algunos gráficos utilizados para obtener insights clave a part
 
 Accede al dashboard interactivo con filtros por categoría, canal publicitario y tipo de conversión:
 
-🔗 [Ver dashboard en línea](https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7)  
+🔗 [Ver dashboard en línea]([https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7](https://lookerstudio.google.com/reporting/feceecaa-0ba9-4750-8b55-0ab20da5a5b8))  
 >  🖥️ Compatible con dispositivos móviles (responsive)
 
 ---
