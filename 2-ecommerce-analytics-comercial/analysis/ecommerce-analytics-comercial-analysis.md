@@ -33,8 +33,8 @@ Este documento detalla el proceso técnico del análisis, incluyendo las fuentes
 2. Este archivo fue cargado como una tabla física en BigQuery, ubicada en la ruta:  
    `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
 3. A partir de esta tabla base se construyeron dos tablas procesadas (guardadas como vistas) mediante consultas SQL:
-   - `Shopify_Orders`: tabla con un registro por orden.
-   - `Shopify_Orders_Items`: tabla con un registro por producto vendido.
+   - `Shopify_Orders`: tabla (vista) con un registro por orden.
+   - `Shopify_Orders_Items`: tabla (vista) con un registro por producto vendido.
 4. Estas dos vistas son las que alimentan el dashboard final en Looker Studio.
 
    
