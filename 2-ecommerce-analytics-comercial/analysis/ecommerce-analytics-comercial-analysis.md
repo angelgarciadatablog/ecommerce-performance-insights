@@ -43,7 +43,7 @@ Este documento detalla el proceso técnico del análisis, incluyendo las fuentes
 
 Las siguientes consultas construyen las tablas que alimentan el dashboard final:
 
-> 📁 Archivo `.csv` original (órdenes de Shopify) y resultados en formato `.csv` de ambas consultas (para práctica o visualización rápida): [`2-ecommerce-analytics-comercial/files_csv`](2-ecommerce-analytics-comercial/files_csv)
+> 📁 Archivo `.csv` original (órdenes de Shopify) y resultados en formato `.csv` de ambas consultas (para práctica o visualización rápida): [`2-ecommerce-analytics-comercial/files_csv`](../2-ecommerce-analytics-comercial/files_csv/))
 
 ```sql
 -- Shopify Orders
