@@ -53,9 +53,20 @@ SELECT
   Name AS order_id, 
   Email AS user_id,
   `Financial Status` AS financial_status,
+  MAX(REGEXP_EXTRACT(`Lineitem name`, r'^([^\s]+)')) AS categoria,
+  MAX(
+    CASE
+        WHEN lower(`Lineitem name`) like '%hombre%' THEN 'Hombre'
+        WHEN lower(`Lineitem name`) like '%mujer%' THEN 'Mujer'
+        ELSE 'Unisex'
+      END 
+  ) AS genero,
   `Billing City` AS billing_city,
   `Payment Method` AS payment_method,
-   NULLIF(TRIM(`Discount Code`), '') AS discount_code
+   NULLIF(TRIM(`Discount Code`), '') AS discount_code,
+   round(AVG(`Discount Amount`)) AS discount_amount,
+   round(AVG(subtotal),2) AS subtotal,
+   
 FROM
   `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
 GROUP BY
@@ -88,8 +99,8 @@ SELECT
     END AS genero,
    REGEXP_EXTRACT(`Lineitem name`, r'^([^\s]+)') AS categoria,
    `Lineitem quantity` AS lineitem_quantity,
-   round(`Lineitem price`) AS lineitem_price,
-   round(`Lineitem quantity`*`Lineitem price`) AS lineitem_total,
+   round(`Lineitem price`,2) AS lineitem_price,
+   round(`Lineitem quantity`*`Lineitem price`,2) AS lineitem_total,
   `Lineitem compare at price` AS lineitem_compare_at_price,
    COALESCE(round(`Lineitem compare at price`-`Lineitem price`),0) AS lineitem_discount,
    COALESCE(round((`Lineitem compare at price`-`Lineitem price`)/`Lineitem compare at price`*100,2),0) AS lineitem_percent_discount,
@@ -116,7 +127,6 @@ SELECT
 
 FROM
   `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
-
 ```
 
 
