@@ -135,11 +135,68 @@ FROM
 
 A continuación, algunos gráficos utilizados para obtener insights clave a partir de la tabla maestra:
 
-| Visualización | Descripción |
-|---------------|-------------|
-| ![Gráfico 1](../images/insight_1.png) | Descripcion |
-| ![Gráfico 2](../images/insight_2.png) | Descripcion |
-| ![Gráfico 3](../images/insight_3.png) | Descripcion |
+---
+
+### 4.1 Ventas con cupones
+
+<div style="display: flex; align-items: center; gap: 40px; margin-bottom: 50px;">
+
+  <img src="../images/ecommerce-performance-cupones.png" width="650"/>
+
+  <div style="max-width: 420px;">
+    <p>
+      Se observa que los cupones son utilizados mayormente por el género femenino y lo utilizan sobre todo el de BIENVENIDA, con una mayor concentración en los distritos de Santiago de Surco y Chorrillos.
+    </p>
+  </div>
+
+</div>
+
+---
+
+### 4.2 Caída de ventas
+
+<div style="display: flex; align-items: center; gap: 40px; margin-bottom: 50px;">
+
+  <img src="../images/ecommerce-performance-caida-de-ventas.png" width="650"/>
+
+  <div style="max-width: 420px;">
+    <p>
+      A partir de julio de 2024 se detecta una caída sostenida en las ventas de artículos con descuento. Este comportamiento podría estar asociado a un cambio en la estrategia comercial, ajustes en las campañas promocionales o variaciones en la demanda durante ese periodo.
+    </p>
+  </div>
+
+</div>
+
+---
+
+### 4.3 Distribución por tallas
+
+<div style="display: flex; align-items: center; gap: 40px; margin-bottom: 50px;">
+
+  <img src="../images/ecommerce-performance-tallas.png" width="650"/>
+
+  <div style="max-width: 420px;">
+    <p>
+      Se identifica que la talla M concentra el mayor volumen de ventas de manera transversal en todos los géneros, consolidándose como la principal talla generadora de ingresos. Esto sugiere la necesidad de una gestión prioritaria de inventario y abastecimiento en esta talla.
+  </div>
+
+</div>
+
+---
+
+### 4.4 Segmentación por categoría
+
+<div style="display: flex; align-items: center; gap: 40px; margin-bottom: 50px;">
+
+  <img src="../images/ecommerce-performance-mujer.png" width="650"/>
+
+  <div style="max-width: 420px;">
+    <p>
+      Finalmente, las categorías con mayor volumen de ventas son Short y Vestido. No obstante, el género con mayor peso dentro de estas categorías es Unisex, no femenino. Además, se observa una mayor participación de ventas en productos sin descuento.
+    </p>
+  </div>
+
+</div>
 
 > 🖼️ Las imágenes se encuentran en la carpeta [`images/`](../images/).
 
@@ -147,7 +204,11 @@ A continuación, algunos gráficos utilizados para obtener insights clave a part
 
 ## 5. 🧭 Hallazgos clave
 
--Descripcion
+-Las campañas con cupón tienen mejor desempeño cuando están segmentadas por género y zona, lo que abre oportunidades de optimización en targeting.  
+
+-La talla M concentra el mayor volumen de ventas en todos los géneros, posicionándose como la talla dominante en términos de demanda.  
+
+-El negocio no depende exclusivamente de promociones para generar ingresos, lo que sugiere:Buena percepción de valor del producto, fortaleza en demanda orgánica, posibilidad de optimizar márgenes reduciendo dependencia promocional.
 
 ---
 
