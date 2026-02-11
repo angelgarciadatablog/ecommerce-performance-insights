@@ -135,8 +135,6 @@ FROM
 
 A continuación, algunos gráficos utilizados para obtener insights clave a partir de la tabla maestra:
 
----
-
 ### 4.1 Ventas con cupones
 
 <div style="display: flex; align-items: center; gap: 40px; margin-bottom: 50px;">
