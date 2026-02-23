@@ -45,6 +45,5 @@ ecommerce-performance-insights/
 Analista de Datos | Lima, Perú  
 👤 Perfil profesional: 🔗 [LinkedIn](https://www.linkedin.com/in/angelgarciachanga)  
 🎥 Canal educativo: [@angelgarciadatablog](https://youtube.com/@angelgarciadatablog)  
-💼 Especializado en Power BI, SQL y análisis de campañas de marketing.  
-
+💼 Especializado en análsis de datos 
 
