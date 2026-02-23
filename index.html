@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>Ecommerce Performance Insights – Angel García</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <style>
+    /* =========================================================
+       DESIGN TOKENS — datablog-design-v1
+    ========================================================= */
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --card-bg: #1a1a1a;
+      --text: #ffffff;
+      --text-secondary: #b0b0b0;
+      --border: #2a2a2a;
+      --border-light: #1f1f1f;
+      --gradient: linear-gradient(90deg, #2674ed 0%, #7c3aed 50%, #ec4899 100%);
+      --gradient-hover: linear-gradient(90deg, #1e5dd8 0%, #6d28d9 50%, #db2777 100%);
+      --accent: #2674ed;
+      --accent-mid: #7c3aed;
+      --accent-end: #ec4899;
+      --shadow-accent: 0 10px 25px -5px rgba(124,58,237,0.4), 0 4px 6px -2px rgba(124,58,237,0.3);
+      --shadow-glow: 0 0 20px rgba(124,58,237,0.3);
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+
+    /* =========================================================
+       RESET + BASE
+    ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* =========================================================
+       PROGRESS BAR
+    ========================================================= */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px;
+      background: var(--gradient);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      box-shadow: var(--shadow-glow);
+    }
+
+    /* =========================================================
+       TOP UI: COUNTER + FULLSCREEN
+    ========================================================= */
+    .top-ui {
+      position: fixed; top: 14px; right: 16px;
+      display: flex; align-items: center; gap: 10px;
+      z-index: 100;
+    }
+    .slide-counter {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+    .fullscreen-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    .fullscreen-btn:hover { border-color: var(--accent-mid); color: var(--text); }
+
+    /* =========================================================
+       DOTS NAVIGATION
+    ========================================================= */
+    .slide-dots {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; z-index: 100; align-items: center;
+    }
+    .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--border);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .dot.active { background: var(--accent-mid); width: 18px; border-radius: 3px; }
+    .dot:hover:not(.active) { background: var(--text-secondary); }
+
+    /* =========================================================
+       NAV ARROWS
+    ========================================================= */
+    .nav-btn {
+      position: fixed; bottom: 14px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 200;
+      font-size: 15px;
+    }
+    .nav-btn:hover:not(:disabled) {
+      border-color: var(--accent-mid);
+      color: var(--text);
+      background: rgba(124,58,237,0.15);
+    }
+    .nav-btn.prev { right: calc(50% + 80px); }
+    .nav-btn.next { left: calc(50% + 80px); }
+    .nav-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* =========================================================
+       KEYBOARD HINT
+    ========================================================= */
+    .keyboard-hint {
+      position: fixed; bottom: 18px; left: 16px;
+      font-size: 11px; color: rgba(176,176,176,0.3); z-index: 100;
+    }
+
+    /* =========================================================
+       SLIDE SYSTEM
+    ========================================================= */
+    .slides-container {
+      width: 100%; height: 100vh;
+      position: relative; overflow: hidden;
+    }
+
+    .slide {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 52px 24px 72px;
+      opacity: 0;
+      pointer-events: none;
+      overflow-y: auto;
+      transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity  0.42s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .slide.active { opacity: 1; pointer-events: all; }
+
+    .slide-content { width: 100%; max-width: 880px; }
+
+    /* =========================================================
+       REUSABLE DESIGN COMPONENTS
+    ========================================================= */
+
+    /* Gradient text */
+    .gt {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Label chip */
+    .label {
+      display: inline-block;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .label-blue   { background: rgba(38,116,237,0.12); color: #60a5fa; border: 1px solid rgba(38,116,237,0.25); }
+    .label-pink   { background: rgba(236,72,153,0.12); color: #f472b6; border: 1px solid rgba(236,72,153,0.25); }
+    .label-purple { background: rgba(124,58,237,0.12); color: #a78bfa; border: 1px solid rgba(124,58,237,0.25); }
+    .label-grad   { background: linear-gradient(135deg,rgba(38,116,237,0.1),rgba(124,58,237,0.15)); color: #a78bfa; border: 1px solid rgba(124,58,237,0.25); }
+
+    /* Card */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(124,58,237,0.45);
+      box-shadow: var(--shadow-accent);
+    }
+
+    /* Tech badge */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-secondary);
+    }
+
+    /* Section title */
+    .sec-title {
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 700; letter-spacing: -0.01em;
+      margin-bottom: 6px; line-height: 1.2;
+    }
+    .sec-sub {
+      font-size: 14px; color: var(--text-secondary);
+      margin-bottom: 22px;
+    }
+
+    /* Grid helpers */
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+    /* Insight numbered badge */
+    .ibadge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid transparent;
+      background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                  var(--gradient) border-box;
+      font-size: 13px; font-weight: 600; color: var(--text-secondary);
+      flex-shrink: 0; margin-bottom: 10px;
+    }
+
+    /* Question card */
+    .q-card {
+      background: linear-gradient(135deg, rgba(38,116,237,0.07), rgba(124,58,237,0.1));
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: var(--radius);
+      padding: 18px 22px 18px 36px;
+      font-size: 16px; font-weight: 500;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .q-card::before {
+      content: '"';
+      font-size: 44px; font-style: italic;
+      color: var(--accent-mid); opacity: 0.25;
+      position: absolute; top: 6px; left: 12px;
+      line-height: 1;
+    }
+
+    /* Objective row */
+    .obj {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .obj:last-child { border-bottom: none; }
+    .obj-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: rgba(124,58,237,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0; margin-top: 1px;
+    }
+    .obj-t { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+    .obj-d { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Mono table ID */
+    .mono-id {
+      font-size: 11px; font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--accent-mid);
+      background: rgba(124,58,237,0.08);
+      padding: 5px 10px; border-radius: 6px;
+      border: 1px solid rgba(124,58,237,0.15);
+      display: inline-block; margin-top: 10px;
+    }
+
+    /* Funnel */
+    .funnel { display: flex; align-items: center; justify-content: center; gap: 4px; flex-wrap: wrap; margin-top: 16px; }
+    .f-step { padding: 9px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .f-arr { color: var(--border); font-size: 18px; padding: 0 4px; }
+
+    /* Code block */
+    pre.code-wrap {
+      border-radius: var(--radius); border: 1px solid var(--border);
+      overflow: auto; max-height: 360px;
+      font-size: 12.5px; line-height: 1.55; margin: 0;
+    }
+    pre.code-wrap code.hljs { border-radius: var(--radius); padding: 18px 20px; }
+
+    /* Code tags */
+    .code-tags { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .code-tag {
+      font-size: 11px; color: var(--text-secondary);
+      background: var(--surface); padding: 5px 10px; border-radius: 6px;
+    }
+
+    /* Pipeline */
+    .pipeline { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; }
+    .p-step { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .p-box {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 16px;
+      text-align: center; font-size: 12px; font-weight: 600;
+      min-width: 110px;
+    }
+    .p-lbl { font-size: 11px; color: var(--text-secondary); }
+    .p-arr { color: var(--text-secondary); font-size: 18px; padding: 0 6px; margin-bottom: 20px; }
+
+    /* Author card */
+    .author-card {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 18px;
+      margin-top: 20px;
+    }
+    .a-name { font-weight: 600; font-size: 14px; }
+    .a-meta { font-size: 12px; color: var(--text-secondary); }
+    .a-links { display: flex; gap: 10px; margin-top: 5px; }
+    .a-link { font-size: 12px; color: var(--text-secondary); text-decoration: none; transition: color 0.2s ease; }
+    .a-link:hover { color: var(--text); text-decoration: underline; }
+
+    /* Dashboard card */
+    .dash-card {
+      background: linear-gradient(135deg, rgba(38,116,237,0.05), rgba(236,72,153,0.05));
+      border: 1px solid rgba(124,58,237,0.25);
+      border-radius: var(--radius-lg); padding: 36px; text-align: center;
+    }
+    .dash-icon { font-size: 52px; margin-bottom: 14px; display: block; }
+    .dash-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .dash-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 22px; max-width: 380px; margin-left: auto; margin-right: auto; }
+    .dash-filters { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .dash-chip { font-size: 11px; padding: 4px 10px; border-radius: 20px; }
+
+    /* Btn outline — borde degradado, fondo transparente */
+    .btn-p {
+      display: inline-flex; align-items: center; gap: 7px;
+      border: 2px solid transparent;
+      background: linear-gradient(var(--bg), var(--bg)) padding-box,
+                  var(--gradient) border-box;
+      color: var(--text);
+      padding: 11px 26px; border-radius: 8px;
+      font-weight: 600; font-size: 14px;
+      text-decoration: none; cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-p:hover { transform: translateY(-2px); box-shadow: var(--shadow-accent); }
+
+    /* Next step item */
+    .ns {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 10px 0; border-bottom: 1px solid var(--border-light);
+    }
+    .ns:last-child { border-bottom: none; }
+    .ns-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gradient); margin-top: 7px; flex-shrink: 0; }
+
+    /* Module big number (decorative bg) */
+    .mod-num {
+      font-size: clamp(90px, 15vw, 140px); font-weight: 800;
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1; opacity: 0.1;
+      position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+      pointer-events: none; user-select: none;
+    }
+
+    /* Stats row */
+    .stats-row {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 14px 18px; display: flex; gap: 0;
+      margin-top: 18px;
+    }
+    .stat { flex: 1; text-align: center; }
+    .stat + .stat { border-left: 1px solid var(--border-light); }
+    .stat-n { font-size: 26px; font-weight: 800; }
+    .stat-l { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* BG blob (decorative) */
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(60px); pointer-events: none;
+    }
+
+    /* Transformation comparison */
+    .trans-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: center; }
+    .trans-col { font-size: 12px; }
+    .trans-col-title { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+    .trans-item { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; font-size: 12px; }
+
+    /* Alert/info box */
+    .info-box {
+      border-radius: var(--radius); padding: 12px 16px;
+      font-size: 12px; margin-top: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .g2, .g3 { grid-template-columns: 1fr; }
+      .pipeline { flex-direction: column; }
+      .p-arr { transform: rotate(90deg); padding: 4px 0; margin-bottom: 0; }
+      .funnel { flex-direction: column; }
+      .f-arr { transform: rotate(90deg); }
+      .trans-grid { grid-template-columns: 1fr; }
+      .trans-grid .f-arr-center { display: none; }
+      .mod-num { display: none; }
+      .stats-row { flex-wrap: wrap; gap: 10px; }
+      .stat + .stat { border-left: none; border-top: 1px solid var(--border-light); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <div class="top-ui">
+    <span class="slide-counter" id="slideCounter">1 / 15</span>
+    <button class="fullscreen-btn" id="fsBtn" title="Pantalla completa">⛶</button>
+  </div>
+
+  <div class="keyboard-hint">← → para navegar</div>
+
+  <div class="slides-container" id="slidesContainer">
+
+    <!-- ====================================================
+         SLIDE 1 — PORTADA
+    ==================================================== -->
+    <section class="slide active">
+      <div class="slide-content" style="position:relative;">
+        <div class="blob" style="width:380px;height:380px;background:rgba(38,116,237,0.07);top:-80px;left:-180px;"></div>
+        <div class="blob" style="width:280px;height:280px;background:rgba(124,58,237,0.09);bottom:-40px;right:-80px;"></div>
+
+        <span class="label label-grad">Proyecto de Análisis de Datos</span>
+
+        <h1 style="font-size:clamp(38px,6vw,64px);font-weight:700;letter-spacing:-0.02em;line-height:1.05;margin-bottom:14px;">
+          Ecommerce<br>
+          <span class="gt">Performance</span><br>
+          Insights
+        </h1>
+
+        <p style="font-size:16px;color:var(--text-secondary);margin-bottom:28px;max-width:480px;">
+          Análisis integral de una tienda Shopify combinando datos de comportamiento (GA4) y datos comerciales.
+        </p>
+
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px;">
+          <span class="badge">◆ BigQuery</span>
+          <span class="badge">◆ SQL</span>
+          <span class="badge">◆ Google Analytics 4</span>
+          <span class="badge">◆ Shopify</span>
+          <span class="badge">◆ Looker Studio</span>
+        </div>
+
+        <div class="author-card">
+
+          <div>
+            <div class="a-name">Angel García</div>
+            <div class="a-meta">Analista de Datos · Lima, Perú</div>
+            <div class="a-links">
+              <a href="https://www.linkedin.com/in/angelgarciachanga" class="a-link" target="_blank">↗ LinkedIn</a>
+              <a href="https://youtube.com/@angelgarciadatablog" class="a-link" target="_blank">↗ @angelgarciadatablog</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 2 — VISIÓN GENERAL
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-grad">Estructura del proyecto</span>
+        <h2 class="sec-title">¿Qué analiza este proyecto?</h2>
+        <p class="sec-sub">Dos módulos independientes con fuentes de datos distintas que se complementan.</p>
+
+        <div class="g2">
+          <!-- Módulo 1 -->
+          <div class="card" style="border-color:rgba(38,116,237,0.3);">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <span style="width:38px;height:38px;border-radius:10px;background:rgba(38,116,237,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#60a5fa;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg></span>
+              <div>
+                <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:1px;">Módulo 1</div>
+                <div style="font-size:14px;font-weight:700;">Product Performance</div>
+              </div>
+            </div>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Vistas, carrito, checkout y compras de productos desde GA4 BigQuery.</p>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;">
+              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">GA4</span>
+              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">BigQuery público</span>
+              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">Looker Studio</span>
+            </div>
+          </div>
+
+          <!-- Módulo 2 -->
+          <div class="card" style="border-color:rgba(236,72,153,0.3);">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <span style="width:38px;height:38px;border-radius:10px;background:rgba(236,72,153,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#f472b6;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>
+              <div>
+                <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-end);margin-bottom:1px;">Módulo 2</div>
+                <div style="font-size:14px;font-weight:700;">Analytics Comercial</div>
+              </div>
+            </div>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Órdenes de Shopify: descuentos, cupones, categorías, tallas y geografía.</p>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;">
+              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Shopify</span>
+              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">BigQuery</span>
+              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Looker Studio</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat"><div class="stat-n gt">4</div><div class="stat-l">queries SQL</div></div>
+          <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">dashboards live</div></div>
+          <div class="stat"><div class="stat-n gt">6+</div><div class="stat-l">insights accionables</div></div>
+          <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">fuentes de datos</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 3 — MÓDULO 1: PORTADA
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content" style="position:relative;overflow:hidden;">
+        <div class="mod-num">01</div>
+
+        <span class="label label-blue">Módulo 1 de 2</span>
+
+        <h2 style="font-size:clamp(30px,5vw,50px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;margin-bottom:16px;">
+          Product<br>
+          <span class="gt">Performance</span><br>
+          Insights
+        </h2>
+
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;">
+          <span class="badge">◆ Google Analytics 4</span>
+          <span class="badge">◆ BigQuery (público)</span>
+          <span class="badge">◆ Looker Studio</span>
+        </div>
+
+        <div class="q-card">
+          ¿Los productos más vistos son los que generan mayores ingresos?
+        </div>
+
+        <p style="font-size:13px;color:var(--text-secondary);">
+          Se analiza el ciclo completo del producto evaluando eventos de conversión registrados en GA4,
+          desde las vistas hasta las compras, a través del dataset público de Google en BigQuery.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 4 — MÓDULO 1: OBJETIVOS
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-blue">Módulo 1 · Objetivos</span>
+        <h2 class="sec-title">¿Qué busca responder?</h2>
+        <p class="sec-sub">Tres ejes centrales guían la exploración de los datos de GA4.</p>
+
+        <div class="card" style="padding:0;">
+          <div class="obj">
+            <div class="obj-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <div>
+              <div class="obj-t">Evaluar el ciclo completo del producto</div>
+              <div class="obj-d">Desde las vistas hasta la compra. Se construye un embudo de conversión por producto usando eventos de GA4: view_item → add_to_cart → begin_checkout → purchase.</div>
+            </div>
+          </div>
+          <div class="obj">
+            <div class="obj-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <div>
+              <div class="obj-t">Medir la eficiencia de cada producto</div>
+              <div class="obj-d">Comparar el volumen de visualizaciones con las ventas reales para detectar productos con alta exposición pero baja conversión.</div>
+            </div>
+          </div>
+          <div class="obj">
+            <div class="obj-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17H8v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/></svg></div>
+            <div>
+              <div class="obj-t">Generar insights accionables</div>
+              <div class="obj-d">Por producto y categoría, para mejorar decisiones de marketing, ajustar inversión publicitaria y priorizar según rentabilidad real.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 5 — MÓDULO 1: DATOS Y TRANSFORMACIÓN
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-blue">Módulo 1 · Datos</span>
+        <h2 class="sec-title">Fuente de datos y transformación</h2>
+        <p class="sec-sub">De datos anidados en GA4 a una tabla plana por producto y fecha.</p>
+
+        <!-- Data source -->
+        <div class="card" style="margin-bottom:16px;padding:16px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="width:36px;height:36px;border-radius:9px;background:rgba(38,116,237,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#60a5fa;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg></span>
+            <div>
+              <div style="font-size:14px;font-weight:600;">Google Analytics 4 – BigQuery público</div>
+              <div style="font-size:12px;color:var(--text-secondary);">Dataset de muestra de Google. Granularidad: evento por usuario.</div>
+            </div>
+          </div>
+          <div class="mono-id">bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*</div>
+        </div>
+
+        <!-- Funnel -->
+        <div style="background:var(--surface);border-radius:var(--radius);padding:16px;margin-bottom:16px;">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:12px;">Embudo de conversión — Eventos capturados</div>
+          <div class="funnel">
+            <div class="f-step" style="background:rgba(38,116,237,0.12);border:1px solid rgba(38,116,237,0.28);color:#60a5fa;">view_item</div>
+            <span class="f-arr">→</span>
+            <div class="f-step" style="background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.22);color:#93c5fd;">add_to_cart</div>
+            <span class="f-arr">→</span>
+            <div class="f-step" style="background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.28);color:#a78bfa;">begin_checkout</div>
+            <span class="f-arr">→</span>
+            <div class="f-step" style="background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.28);color:#f472b6;">purchase</div>
+          </div>
+        </div>
+
+        <!-- Transformation -->
+        <div style="background:var(--surface);border-radius:var(--radius);padding:14px 18px;">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:10px;">Transformación aplicada en BigQuery</div>
+          <div class="trans-grid">
+            <div class="trans-col">
+              <div class="trans-col-title">Tabla original (cruda)</div>
+              <div class="trans-item"><span style="color:#f87171;">✗</span> Campos anidados <code style="font-size:11px;">items[]</code></div>
+              <div class="trans-item"><span style="color:#f87171;">✗</span> Difícil de analizar directo</div>
+              <div class="trans-item"><span style="color:#f87171;">✗</span> 1 fila = 1 evento</div>
+            </div>
+            <div style="text-align:center;font-size:22px;color:var(--text-secondary);">→</div>
+            <div class="trans-col">
+              <div class="trans-col-title">Tabla reestructurada</div>
+              <div class="trans-item"><span style="color:#4ade80;">✓</span> UNNEST(items) aplicado</div>
+              <div class="trans-item"><span style="color:#4ade80;">✓</span> Métricas por producto/fecha</div>
+              <div class="trans-item"><span style="color:#4ade80;">✓</span> Listo para Looker Studio</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 6 — MÓDULO 1: SQL
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-blue">Módulo 1 · SQL</span>
+        <h2 class="sec-title">Consulta principal — GA4 BigQuery</h2>
+        <p class="sec-sub">Construye la tabla maestra agregando eventos de conversión por producto y fecha.</p>
+
+        <pre class="code-wrap"><code class="language-sql">SELECT
+  -- Fecha del evento (de YYYYMMDD a DATE)
+  PARSE_DATE('%Y%m%d', event_date)  AS date,
+  items.item_id                     AS item_id,
+
+  -- Embudo de conversión: eventos → columnas métricas
+  SUM(CASE WHEN event_name = 'view_item'
+      THEN IFNULL(items.quantity, 1) ELSE 0 END)  AS view_item,
+
+  SUM(CASE WHEN event_name = 'add_to_cart'
+      THEN IFNULL(items.quantity, 1) ELSE 0 END)  AS add_to_cart,
+
+  SUM(CASE WHEN event_name = 'begin_checkout'
+      THEN IFNULL(items.quantity, 1) ELSE 0 END)  AS begin_checkout,
+
+  SUM(CASE WHEN event_name = 'purchase'
+      THEN IFNULL(items.quantity, 1) ELSE 0 END)  AS purchase_item,
+
+  SUM(CASE WHEN event_name = 'purchase'
+      THEN items.item_revenue ELSE 0 END)         AS revenue_item
+
+FROM
+  `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`,
+  UNNEST(items) AS items
+
+WHERE
+  REGEXP_EXTRACT(_TABLE_SUFFIX, r"[0-9]+")
+    BETWEEN FORMAT_DATE("%Y%m%d", "2020-11-01")
+    AND     FORMAT_DATE("%Y%m%d", CURRENT_DATE())
+  AND items.item_id &lt;&gt; '(not set)'
+
+GROUP BY
+  PARSE_DATE('%Y%m%d', event_date),
+  item_id</code></pre>
+
+        <div class="code-tags">
+          <span class="code-tag">▸ <strong>UNNEST(items)</strong> — aplana el array anidado de GA4</span>
+          <span class="code-tag">▸ <strong>_TABLE_SUFFIX</strong> — filtra tablas por rango de fechas</span>
+          <span class="code-tag">▸ <strong>SUM + CASE WHEN</strong> — pivota eventos a columnas</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 7 — MÓDULO 1: VISUALIZACIONES
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-blue">Módulo 1 · Análisis visual</span>
+        <h2 class="sec-title">Visualizaciones</h2>
+        <p class="sec-sub">Gráficos clave obtenidos del análisis de eventos GA4 en BigQuery.</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:6px;">
+
+          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+            <img src="1-product-performance-insight/images/insight_1.png"
+                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:150px;"
+                 alt="Tráfico sin conversión" loading="lazy">
+            <div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px;">4.1 Spike sin ventas</div>
+              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Entre el 26 dic y el 17 ene se dispararon las vistas sin un incremento proporcional en las ventas.</p>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+            <img src="1-product-performance-insight/images/insight_2.png"
+                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:150px;"
+                 alt="Categorías sin revenue" loading="lazy">
+            <div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px;">4.2 Top vistas · cero revenue</div>
+              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Men's T-Shirts, Mug, Sale, Clearance y otros 3 están en el top 10 de vistas pero no generan ingresos.</p>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+            <img src="1-product-performance-insight/images/insight_3.png"
+                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:150px;"
+                 alt="Apparel revenue" loading="lazy">
+            <div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px;">4.3 Apparel</div>
+              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Apparel genera el mayor revenue, pero no es la categoría con más vistas. Oportunidad de visibilidad.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 8 — MÓDULO 1: HALLAZGOS
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-blue">Módulo 1 · Hallazgos</span>
+        <h2 class="sec-title">Insights clave</h2>
+        <p class="sec-sub">Tres patrones críticos identificados en el comportamiento de productos.</p>
+
+        <div class="g3">
+          <div class="card">
+            <div class="ibadge">1</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Desajuste fin de año</div>
+            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Entre <strong style="color:var(--text)">26 dic – 17 ene</strong> aumentaron las vistas sin incremento proporcional en ventas. Alto tráfico, baja conversión.</p>
+            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(251,191,36,0.1);color:#fbbf24;border-radius:4px;display:inline-block;">⚠️ Revisar inversión publi.</div>
+          </div>
+
+          <div class="card">
+            <div class="ibadge">2</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Categorías sin revenue</div>
+            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;"><strong style="color:var(--text)">Men's T-Shirts, Mugs, Sale</strong> en top 10 de vistas pero generan <strong style="color:#f87171">cero ingresos</strong>. ¿Stock agotado? ¿Canal alternativo?</p>
+            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(248,113,113,0.1);color:#f87171;border-radius:4px;display:inline-block;">🔴 Reducir exposición</div>
+          </div>
+
+          <div class="card">
+            <div class="ibadge">3</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Oportunidad en Apparel</div>
+            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;"><strong style="color:var(--text)">Apparel</strong> genera el mayor revenue pero recibe pocas vistas. Aumentar su visibilidad puede impactar significativamente.</p>
+            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(74,222,128,0.1);color:#4ade80;border-radius:4px;display:inline-block;">✅ Priorizar en campañas</div>
+          </div>
+        </div>
+
+        <div class="info-box" style="background:var(--surface);border:1px solid var(--border-light);">
+          → <strong>Recomendación:</strong> Realinear inversión publicitaria desde categorías con alto tráfico/cero revenue
+          hacia <strong>Apparel</strong> y productos con mayor potencial de conversión probado.
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 9 — MÓDULO 1: DASHBOARD
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-blue">Módulo 1 · Dashboard</span>
+        <h2 class="sec-title">Dashboard interactivo</h2>
+        <p class="sec-sub">Visualización del funnel de conversión por producto y categoría en Looker Studio.</p>
+
+        <div class="dash-card">
+          <div class="dash-title">Product Performance Dashboard</div>
+          <p class="dash-desc">Funnel de conversión, análisis de categorías y comparativas de vistas vs. revenue. Responsive para mobile.</p>
+
+          <div class="dash-filters">
+            <span class="dash-chip" style="background:rgba(38,116,237,0.1);color:#60a5fa;border:1px solid rgba(38,116,237,0.2);">Filtro por categoría</span>
+            <span class="dash-chip" style="background:rgba(38,116,237,0.1);color:#60a5fa;border:1px solid rgba(38,116,237,0.2);">Filtro por fecha</span>
+            <span class="dash-chip" style="background:rgba(38,116,237,0.1);color:#60a5fa;border:1px solid rgba(38,116,237,0.2);">Fuente: GA4 · BigQuery</span>
+            <span class="dash-chip" style="background:rgba(38,116,237,0.1);color:#60a5fa;border:1px solid rgba(38,116,237,0.2);">Mobile friendly</span>
+          </div>
+
+          <a href="https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7"
+             class="btn-p" target="_blank">
+            Ver dashboard en línea →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 10 — MÓDULO 2: PORTADA
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content" style="position:relative;overflow:hidden;">
+        <div class="mod-num">02</div>
+
+        <span class="label label-pink">Módulo 2 de 2</span>
+
+        <h2 style="font-size:clamp(30px,5vw,50px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;margin-bottom:16px;">
+          Ecommerce<br>
+          <span class="gt">Analytics</span><br>
+          Comercial
+        </h2>
+
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;">
+          <span class="badge">◆ Shopify</span>
+          <span class="badge">◆ BigQuery</span>
+          <span class="badge">◆ Looker Studio</span>
+        </div>
+
+        <div class="q-card">
+          ¿Cómo impactan los descuentos, cupones y categorías en las ventas del ecommerce?
+        </div>
+
+        <p style="font-size:13px;color:var(--text-secondary);">
+          Datos simulados realistas de una tienda Shopify. El análisis es replicable a cualquier tienda
+          con la misma estructura de exportación de pedidos.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 11 — MÓDULO 2: ALCANCE
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-pink">Módulo 2 · Alcance</span>
+        <h2 class="sec-title">¿Qué se analiza?</h2>
+        <p class="sec-sub">Seis dimensiones comerciales exploradas a partir de los datos de órdenes de Shopify.</p>
+
+        <div class="g2" style="gap:10px;">
+          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
+            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Ventas vs. año anterior</div>
+              <div style="font-size:12px;color:var(--text-secondary);">Comparativa temporal para detectar tendencias y anomalías de crecimiento o caída.</div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
+            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Impacto de descuentos</div>
+              <div style="font-size:12px;color:var(--text-secondary);">Ventas con y sin descuento. 8 rangos de descuento clasificados (desde sin descuento hasta &gt;70%).</div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
+            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg></span>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Categorías de productos</div>
+              <div style="font-size:12px;color:var(--text-secondary);">Rendimiento por categoría: Short, Vestido, Unisex y más. ¿Cuáles lideran en volumen e ingresos?</div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
+            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Cupones promocionales</div>
+              <div style="font-size:12px;color:var(--text-secondary);">BIENVENIDA, SUERTE, CYBER — efectividad y segmentación por género y ciudad.</div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
+            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="4"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Tallas y género</div>
+              <div style="font-size:12px;color:var(--text-secondary);">Preferencias de talla por género para optimizar inventario y segmentación de campañas.</div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
+            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg></span>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Distribución geográfica</div>
+              <div style="font-size:12px;color:var(--text-secondary);">Ciudades con mayor concentración de pedidos para estrategias logísticas y campañas locales.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 12 — MÓDULO 2: FLUJO DE DATOS
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-pink">Módulo 2 · Arquitectura de datos</span>
+        <h2 class="sec-title">Flujo de trabajo</h2>
+        <p class="sec-sub">Del CSV exportado de Shopify al dashboard interactivo en Looker Studio.</p>
+
+        <div style="background:var(--surface);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
+          <div class="pipeline">
+            <div class="p-step">
+              <div class="p-box" style="border-color:rgba(236,72,153,0.3);background:rgba(236,72,153,0.07);">
+                <div style="margin-bottom:5px;color:rgba(236,72,153,0.8);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+                <div>Shopify</div>
+                <div class="p-lbl">Export CSV</div>
+              </div>
+            </div>
+            <span class="p-arr">→</span>
+            <div class="p-step">
+              <div class="p-box" style="border-color:rgba(38,116,237,0.3);background:rgba(38,116,237,0.07);">
+                <div style="margin-bottom:5px;color:rgba(38,116,237,0.8);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+                <div>BigQuery</div>
+                <div class="p-lbl">Tabla base</div>
+              </div>
+            </div>
+            <span class="p-arr">→</span>
+            <div class="p-step">
+              <div class="p-box" style="border-color:rgba(124,58,237,0.3);background:rgba(124,58,237,0.07);">
+                <div style="margin-bottom:5px;color:rgba(124,58,237,0.8);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div>
+                <div>SQL Views</div>
+                <div class="p-lbl">2 tablas procesadas</div>
+              </div>
+            </div>
+            <span class="p-arr">→</span>
+            <div class="p-step">
+              <div class="p-box" style="border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.07);">
+                <div style="margin-bottom:5px;color:rgba(74,222,128,0.8);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+                <div>Looker Studio</div>
+                <div class="p-lbl">Dashboard live</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card" style="border-color:rgba(124,58,237,0.25);padding:16px 18px;">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-mid);margin-bottom:7px;">Tabla 1 · Órdenes</div>
+            <div class="mono-id" style="margin-top:0;margin-bottom:8px;">Shopify_Orders</div>
+            <p style="font-size:12px;color:var(--text-secondary);">Una fila por orden. ID, cliente, fecha, total, estado de pago, cupón, ciudad.</p>
+          </div>
+          <div class="card" style="border-color:rgba(236,72,153,0.25);padding:16px 18px;">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-end);margin-bottom:7px;">Tabla 2 · Items</div>
+            <div class="mono-id" style="margin-top:0;margin-bottom:8px;color:var(--accent-end);border-color:rgba(236,72,153,0.2);background:rgba(236,72,153,0.05);">Shopify_Orders_Items</div>
+            <p style="font-size:12px;color:var(--text-secondary);">Una fila por producto. SKU, talla, precio, descuento, categoría, género.</p>
+          </div>
+        </div>
+
+        <div class="info-box" style="background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);">
+          → <strong>Próximo paso:</strong> Conexión directa con la API REST de Shopify para automatizar la recolección y eliminar el CSV manual.
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 13 — MÓDULO 2: SQL
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-pink">Módulo 2 · SQL</span>
+        <h2 class="sec-title">Consulta — Shopify Orders Items</h2>
+        <p class="sec-sub">Extrae nombre, talla, género, categoría y clasifica descuentos en 8 rangos.</p>
+
+        <pre class="code-wrap"><code class="language-sql">SELECT
+  DATE(`Created at`) AS date,
+  Name             AS order_id,
+
+  -- Extrae nombre del producto (todo antes del primer guión)
+  REGEXP_EXTRACT(`Lineitem name`, r'^(.*?) -')   AS lineitem_name,
+
+  -- Extrae talla (último segmento en MAYÚSCULAS)
+  REGEXP_EXTRACT(`Lineitem name`, r' - ([A-Z]+)$') AS lineitem_variant,
+
+  -- Clasifica género desde el nombre del artículo
+  CASE
+    WHEN LOWER(`Lineitem name`) LIKE '%hombre%' THEN 'Hombre'
+    WHEN LOWER(`Lineitem name`) LIKE '%mujer%'  THEN 'Mujer'
+    ELSE 'Unisex'
+  END AS genero,
+
+  -- Categoría: primera palabra del nombre
+  REGEXP_EXTRACT(`Lineitem name`, r'^([^\s]+)') AS categoria,
+
+  ROUND(`Lineitem price`, 2)  AS lineitem_price,
+  COALESCE(ROUND(`Lineitem compare at price` - `Lineitem price`), 0) AS descuento,
+
+  -- Clasifica el % de descuento en 8 rangos
+  CASE
+    WHEN (`Lineitem compare at price`-`Lineitem price`)
+         /`Lineitem compare at price`*100 &gt; 69 THEN 'Descuento mayor a 70%'
+    WHEN (`Lineitem compare at price`-`Lineitem price`)
+         /`Lineitem compare at price`*100 &gt; 49 THEN 'Descuento entre 50% y 70%'
+    WHEN (`Lineitem compare at price`-`Lineitem price`)
+         /`Lineitem compare at price`*100 &gt; 29 THEN 'Descuento entre 30% y 50%'
+    WHEN (`Lineitem compare at price`-`Lineitem price`)
+         /`Lineitem compare at price`*100 &gt;  9 THEN 'Descuento entre 10% y 30%'
+    ELSE 'Sin descuento'
+  END AS range_discount
+
+FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre>
+
+        <div class="code-tags">
+          <span class="code-tag">▸ <strong>REGEXP_EXTRACT</strong> — parsea nombre, talla y categoría</span>
+          <span class="code-tag">▸ <strong>CASE WHEN</strong> — 8 rangos de descuento</span>
+          <span class="code-tag">▸ <strong>LIKE '%mujer%'</strong> — clasifica género</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 14 — MÓDULO 2: VISUALIZACIONES
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-pink">Módulo 2 · Análisis visual</span>
+        <h2 class="sec-title">Visualizaciones</h2>
+        <p class="sec-sub">Gráficos clave extraídos del análisis de la tabla maestra de Shopify.</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px;">
+
+          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+            <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-cupones.png"
+                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:140px;"
+                 alt="Ventas con cupones" loading="lazy">
+            <div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent-end);margin-bottom:4px;">4.1 Cupones</div>
+              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Los cupones son usados mayormente por el género femenino — sobre todo el de BIENVENIDA — concentrados en Surco y Chorrillos.</p>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+            <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-caida-de-ventas.png"
+                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:140px;"
+                 alt="Caída de ventas" loading="lazy">
+            <div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent-end);margin-bottom:4px;">4.2 Caída de ventas</div>
+              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Desde julio 2024 se detecta una caída sostenida en ventas con descuento, posiblemente por cambio en estrategia comercial.</p>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+            <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-tallas.png"
+                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:140px;"
+                 alt="Distribución por tallas" loading="lazy">
+            <div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent-end);margin-bottom:4px;">4.3 Tallas</div>
+              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">La talla M concentra el mayor volumen de ventas en todos los géneros — inventario prioritario en esta talla.</p>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+            <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-mujer.png"
+                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:140px;"
+                 alt="Segmentación por categoría" loading="lazy">
+            <div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent-end);margin-bottom:4px;">4.4 Categorías</div>
+              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Short y Vestido lideran en volumen con mayor peso Unisex. Alta participación de ventas sin descuento.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 15 — MÓDULO 2: HALLAZGOS
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-pink">Módulo 2 · Hallazgos</span>
+        <h2 class="sec-title">Insights clave</h2>
+        <p class="sec-sub">Patrones encontrados en el rendimiento comercial del ecommerce Shopify.</p>
+
+        <div class="g3">
+          <div class="card">
+            <div class="ibadge">1</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Cupones segmentados</div>
+            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Los cupones rinden mejor segmentados por <strong style="color:var(--text)">género y zona</strong>. El cupón <strong style="color:var(--text)">BIENVENIDA</strong> es el más usado por mujeres en Surco y Chorrillos.</p>
+            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(74,222,128,0.1);color:#4ade80;border-radius:4px;display:inline-block;">✅ Optimizar targeting</div>
+          </div>
+
+          <div class="card">
+            <div class="ibadge">2</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Talla M domina</div>
+            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">La talla <strong style="color:var(--text)">M concentra el mayor volumen</strong> de ventas de forma transversal en todos los géneros. Es la talla crítica del negocio.</p>
+            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(251,191,36,0.1);color:#fbbf24;border-radius:4px;display:inline-block;">⚠️ Priorizar stock talla M</div>
+          </div>
+
+          <div class="card">
+            <div class="ibadge">3</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Demanda orgánica sólida</div>
+            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">El negocio <strong style="color:var(--text)">no depende de descuentos</strong> para vender. Hay fuerte demanda orgánica, buena percepción de valor y margen para optimizar.</p>
+            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(74,222,128,0.1);color:#4ade80;border-radius:4px;display:inline-block;">✅ Reducir dependencia promo</div>
+          </div>
+        </div>
+
+        <div class="info-box" style="background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.2);">
+          ⚠️ <strong style="color:#f87171;">Alerta:</strong> Desde julio 2024 se detecta caída sostenida en ventas con descuento.
+          Requiere revisión de la estrategia promocional para ese periodo.
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 16 — MÓDULO 2: DASHBOARD
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-pink">Módulo 2 · Dashboard</span>
+        <h2 class="sec-title">Dashboard interactivo</h2>
+        <p class="sec-sub">Análisis comercial completo en Looker Studio con filtros dinámicos.</p>
+
+        <div class="dash-card" style="background:linear-gradient(135deg,rgba(236,72,153,0.05),rgba(124,58,237,0.05));border-color:rgba(236,72,153,0.25);">
+          <div class="dash-title">Ecommerce Analytics Comercial</div>
+          <p class="dash-desc">Descuentos, categorías, cupones, tallas y geografía. Filtros dinámicos por estado, categoría, género y nivel de descuento.</p>
+
+          <div class="dash-filters">
+            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Estado de pago</span>
+            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Categoría</span>
+            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Género</span>
+            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Tallas</span>
+            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Nivel de descuento</span>
+          </div>
+
+          <a href="https://lookerstudio.google.com/reporting/feceecaa-0ba9-4750-8b55-0ab20da5a5b8"
+             class="btn-p" target="_blank">
+            Ver dashboard en línea →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 17 — CIERRE
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-grad">Cierre</span>
+        <h2 class="sec-title">Conclusiones y <span class="gt">próximos pasos</span></h2>
+
+        <div class="g2" style="gap:12px;margin-bottom:14px;">
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;">Módulo 1 — GA4</div>
+            <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Redirigir inversión hacia Apparel (alto revenue, baja visibilidad)</div></div>
+            <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Deprioritizar categorías con tráfico alto y cero revenue</div></div>
+            <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Investigar spike de tráfico sin conversión de fin de año</div></div>
+          </div>
+          <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-end);margin-bottom:10px;">Módulo 2 — Shopify</div>
+            <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Segmentar cupones por género + zona geográfica</div></div>
+            <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Asegurar stock prioritario en talla M para todos los géneros</div></div>
+            <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Analizar caída de ventas con descuento desde julio 2024</div></div>
+          </div>
+        </div>
+
+        <div class="info-box" style="background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);margin-bottom:14px;">
+          <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-mid);">→ Próximos pasos técnicos</span><br>
+          <span style="font-size:12px;color:var(--text-secondary);margin-top:6px;display:block;">
+            · Conectar directamente con la API REST de Shopify para eliminar el CSV manual<br>
+            · Actualizar query de GA4 en tiempo real usando <code style="color:var(--accent-mid);font-size:11px;">CURRENT_DATE()</code> en lugar de fechas hardcodeadas
+          </span>
+        </div>
+
+        <div class="author-card">
+
+          <div style="flex:1;">
+            <div class="a-name">Angel García</div>
+            <div class="a-meta">Analista de Datos · Lima, Perú</div>
+            <div class="a-links">
+              <a href="https://www.linkedin.com/in/angelgarciachanga" class="a-link" target="_blank">↗ LinkedIn</a>
+              <a href="https://youtube.com/@angelgarciadatablog" class="a-link" target="_blank">↗ @angelgarciadatablog</a>
+            </div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:10px;color:var(--text-secondary);margin-bottom:4px;">Repositorio</div>
+            <span style="font-size:11px;font-family:monospace;color:var(--accent-mid);background:rgba(124,58,237,0.08);padding:4px 8px;border-radius:4px;white-space:nowrap;">ecommerce-performance-insights</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /slides-container -->
+
+  <!-- Navigation -->
+  <button class="nav-btn prev" id="prevBtn" aria-label="Slide anterior">&#8592;</button>
+  <div class="slide-dots" id="slideDots"></div>
+  <button class="nav-btn next" id="nextBtn" aria-label="Siguiente slide">&#8594;</button>
+
+  <!-- Highlight.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+
+  <script>
+    /* =========================================================
+       SLIDE SYSTEM
+    ========================================================= */
+    hljs.highlightAll();
+
+    const slides      = document.querySelectorAll('.slide');
+    const total       = slides.length;
+    const progressBar = document.getElementById('progressBar');
+    const counter     = document.getElementById('slideCounter');
+    const prevBtn     = document.getElementById('prevBtn');
+    const nextBtn     = document.getElementById('nextBtn');
+    const dotsWrap    = document.getElementById('slideDots');
+
+    let current    = 0;
+    let isAnimating = false;
+
+    /* Build dots */
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(d);
+    });
+
+    function goTo(target) {
+      if (target === current || isAnimating || target < 0 || target >= total) return;
+      isAnimating = true;
+
+      const dir      = target > current ? 1 : -1;
+      const oldSlide = slides[current];
+      const newSlide = slides[target];
+
+      /* Position new slide off-screen without transition */
+      newSlide.style.transition = 'none';
+      newSlide.style.transform  = `translateX(${dir * 55}px)`;
+      newSlide.style.opacity    = '0';
+      newSlide.classList.add('active');
+
+      /* Force reflow */
+      newSlide.offsetHeight;
+
+      /* Animate in */
+      newSlide.style.transition = '';
+      newSlide.style.transform  = 'translateX(0)';
+      newSlide.style.opacity    = '1';
+
+      /* Animate out */
+      oldSlide.style.transform = `translateX(${dir * -55}px)`;
+      oldSlide.style.opacity   = '0';
+
+      current = target;
+
+      setTimeout(() => {
+        oldSlide.classList.remove('active');
+        oldSlide.style.transform  = '';
+        oldSlide.style.opacity    = '';
+        oldSlide.style.transition = '';
+        newSlide.style.transform  = '';
+        newSlide.style.opacity    = '';
+        isAnimating = false;
+      }, 440);
+
+      updateUI();
+    }
+
+    function updateUI() {
+      counter.textContent       = `${current + 1} / ${total}`;
+      progressBar.style.width   = `${((current + 1) / total) * 100}%`;
+      prevBtn.disabled          = current === 0;
+      nextBtn.disabled          = current === total - 1;
+      document.querySelectorAll('.dot').forEach((d, i) =>
+        d.classList.toggle('active', i === current)
+      );
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    /* Keyboard */
+    document.addEventListener('keydown', e => {
+      if (['ArrowRight', ' ', 'ArrowDown'].includes(e.key)) { e.preventDefault(); goTo(current + 1); }
+      if (['ArrowLeft', 'ArrowUp'].includes(e.key))         { e.preventDefault(); goTo(current - 1); }
+      if (e.key === 'Home') goTo(0);
+      if (e.key === 'End')  goTo(total - 1);
+    });
+
+    /* Touch swipe */
+    let touchX = 0;
+    document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend',   e => {
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 48) goTo(current + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+
+    /* Fullscreen */
+    document.getElementById('fsBtn').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    /* Init */
+    updateUI();
+  </script>
+</body>
+</html>
