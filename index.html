@@ -188,12 +188,6 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 22px;
-      transition: all 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(124,58,237,0.45);
-      box-shadow: var(--shadow-accent);
     }
 
     /* Tech badge */
@@ -269,10 +263,10 @@
     /* Mono table ID */
     .mono-id {
       font-size: 11px; font-family: 'SF Mono', 'Fira Code', monospace;
-      color: var(--accent-mid);
-      background: rgba(124,58,237,0.08);
+      color: var(--text-secondary);
+      background: var(--surface);
       padding: 5px 10px; border-radius: 6px;
-      border: 1px solid rgba(124,58,237,0.15);
+      border: 1px solid var(--border);
       display: inline-block; margin-top: 10px;
     }
 
@@ -287,7 +281,7 @@
       overflow: auto; max-height: 360px;
       font-size: 12.5px; line-height: 1.55; margin: 0;
     }
-    pre.code-wrap code.hljs { border-radius: var(--radius); padding: 18px 20px; }
+    pre.code-wrap code.hljs { border-radius: var(--radius); padding: 18px 20px; background: #000 !important; }
 
     /* Code tags */
     .code-tags { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
@@ -394,6 +388,36 @@
       font-size: 12px; margin-top: 14px;
     }
 
+    /* Lightbox */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.92);
+      display: flex; align-items: center; justify-content: center;
+      cursor: zoom-out;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #lightbox.open { opacity: 1; pointer-events: all; }
+    #lightbox-img {
+      max-width: 92vw; max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      object-fit: contain;
+      transform: scale(0.96);
+      transition: transform 0.25s ease;
+    }
+    #lightbox.open #lightbox-img { transform: scale(1); }
+    #lightbox-close {
+      position: absolute; top: 16px; right: 16px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      color: #fff; width: 36px; height: 36px; border-radius: 50%;
+      font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    #lightbox-close:hover { background: rgba(255,255,255,0.18); }
+    .lightbox-trigger { cursor: zoom-in; }
+
     /* Responsive */
     @media (max-width: 640px) {
       .g2, .g3 { grid-template-columns: 1fr; }
@@ -451,13 +475,15 @@
         </div>
 
         <div class="author-card">
-
+          <img src="https://storage.googleapis.com/angel-assets/profile/Foto%20usmp%20ci%CC%81culo.png"
+               alt="Angel García"
+               style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;">
           <div>
             <div class="a-name">Angel García</div>
             <div class="a-meta">Analista de Datos · Lima, Perú</div>
             <div class="a-links">
-              <a href="https://www.linkedin.com/in/angelgarciachanga" class="a-link" target="_blank">↗ LinkedIn</a>
-              <a href="https://youtube.com/@angelgarciadatablog" class="a-link" target="_blank">↗ @angelgarciadatablog</a>
+              <a href="https://www.linkedin.com/in/angelgarciachanga" class="a-link" target="_blank" rel="noopener noreferrer">↗ LinkedIn</a>
+              <a href="https://youtube.com/@angelgarciadatablog" class="a-link" target="_blank" rel="noopener noreferrer">↗ @angelgarciadatablog</a>
             </div>
           </div>
         </div>
@@ -510,7 +536,7 @@
         </div>
 
         <div class="stats-row">
-          <div class="stat"><div class="stat-n gt">4</div><div class="stat-l">queries SQL</div></div>
+          <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">queries SQL</div></div>
           <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">dashboards live</div></div>
           <div class="stat"><div class="stat-n gt">6+</div><div class="stat-l">insights accionables</div></div>
           <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">fuentes de datos</div></div>
@@ -603,7 +629,7 @@
               <div style="font-size:12px;color:var(--text-secondary);">Dataset de muestra de Google. Granularidad: evento por usuario.</div>
             </div>
           </div>
-          <div class="mono-id">bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*</div>
+          <div class="mono-id"><a href="https://console.cloud.google.com/bigquery?ws=!1m4!1m3!3m2!1sbigquery-public-data!2sga4_obfuscated_sample_ecommerce" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;text-decoration-style:dashed;text-underline-offset:3px;text-decoration-color:var(--border);">bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*</a></div>
         </div>
 
         <!-- Funnel -->
@@ -695,80 +721,64 @@ GROUP BY
     </section>
 
     <!-- ====================================================
-         SLIDE 7 — MÓDULO 1: VISUALIZACIONES
+         SLIDE 7 — MÓDULO 1: ANÁLISIS & HALLAZGOS
     ==================================================== -->
     <section class="slide">
       <div class="slide-content">
-        <span class="label label-blue">Módulo 1 · Análisis visual</span>
-        <h2 class="sec-title">Visualizaciones</h2>
-        <p class="sec-sub">Gráficos clave obtenidos del análisis de eventos GA4 en BigQuery.</p>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:6px;">
-
-          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
-            <img src="1-product-performance-insight/images/insight_1.png"
-                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:150px;"
-                 alt="Tráfico sin conversión" loading="lazy">
-            <div>
-              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px;">4.1 Spike sin ventas</div>
-              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Entre el 26 dic y el 17 ene se dispararon las vistas sin un incremento proporcional en las ventas.</p>
-            </div>
-          </div>
-
-          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
-            <img src="1-product-performance-insight/images/insight_2.png"
-                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:150px;"
-                 alt="Categorías sin revenue" loading="lazy">
-            <div>
-              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px;">4.2 Top vistas · cero revenue</div>
-              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Men's T-Shirts, Mug, Sale, Clearance y otros 3 están en el top 10 de vistas pero no generan ingresos.</p>
-            </div>
-          </div>
-
-          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
-            <img src="1-product-performance-insight/images/insight_3.png"
-                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:150px;"
-                 alt="Apparel revenue" loading="lazy">
-            <div>
-              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px;">4.3 Apparel</div>
-              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Apparel genera el mayor revenue, pero no es la categoría con más vistas. Oportunidad de visibilidad.</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ====================================================
-         SLIDE 8 — MÓDULO 1: HALLAZGOS
-    ==================================================== -->
-    <section class="slide">
-      <div class="slide-content">
-        <span class="label label-blue">Módulo 1 · Hallazgos</span>
-        <h2 class="sec-title">Insights clave</h2>
+        <span class="label label-blue">Módulo 1 · Análisis & Hallazgos</span>
+        <h2 class="sec-title">Visualizaciones e Insights</h2>
         <p class="sec-sub">Tres patrones críticos identificados en el comportamiento de productos.</p>
 
-        <div class="g3">
-          <div class="card">
-            <div class="ibadge">1</div>
-            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Desajuste fin de año</div>
-            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Entre <strong style="color:var(--text)">26 dic – 17 ene</strong> aumentaron las vistas sin incremento proporcional en ventas. Alto tráfico, baja conversión.</p>
-            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(251,191,36,0.1);color:#fbbf24;border-radius:4px;display:inline-block;">⚠️ Revisar inversión publi.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;height:calc(100vh - 300px);min-height:0;">
+
+          <div class="card" style="padding:0;overflow:hidden;display:flex;align-items:stretch;flex:1;min-height:0;">
+            <div style="position:relative;width:42%;flex-shrink:0;">
+              <img src="1-product-performance-insight/images/insight_1.png"
+                   class="lightbox-trigger"
+                   style="width:100%;height:100%;object-fit:contain;background:var(--card-bg);border-radius:var(--radius) 0 0 var(--radius);display:block;"
+                   alt="Tráfico sin conversión" loading="lazy">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.1 · Revenue & Views</div>
+            </div>
+            <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
+              <div class="ibadge">1</div>
+              <div style="font-size:13px;font-weight:600;line-height:1.2;">Desajuste fin de año</div>
+              <p style="font-size:11.5px;color:var(--text-secondary);line-height:1.4;">26 dic – 17 ene: pico de tráfico sin conversión proporcional en ventas.</p>
+              <div style="font-size:10px;padding:2px 8px;background:rgba(251,191,36,0.1);color:#fbbf24;border-radius:4px;align-self:flex-start;">⚠️ Revisar inversión publi.</div>
+            </div>
           </div>
 
-          <div class="card">
-            <div class="ibadge">2</div>
-            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Categorías sin revenue</div>
-            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;"><strong style="color:var(--text)">Men's T-Shirts, Mugs, Sale</strong> en top 10 de vistas pero generan <strong style="color:#f87171">cero ingresos</strong>. ¿Stock agotado? ¿Canal alternativo?</p>
-            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(248,113,113,0.1);color:#f87171;border-radius:4px;display:inline-block;">🔴 Reducir exposición</div>
+          <div class="card" style="padding:0;overflow:hidden;display:flex;align-items:stretch;flex:1;min-height:0;">
+            <div style="position:relative;width:42%;flex-shrink:0;">
+              <img src="1-product-performance-insight/images/insight_2.png"
+                   class="lightbox-trigger"
+                   style="width:100%;height:100%;object-fit:contain;background:var(--card-bg);border-radius:var(--radius) 0 0 var(--radius);display:block;"
+                   alt="Categorías sin revenue" loading="lazy">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.2 · Product Performance</div>
+            </div>
+            <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
+              <div class="ibadge">2</div>
+              <div style="font-size:13px;font-weight:600;line-height:1.2;">Categorías sin revenue</div>
+              <p style="font-size:11.5px;color:var(--text-secondary);line-height:1.4;"><strong style="color:var(--text)">Men's T-Shirts, Mugs, Sale</strong> — top 10 en vistas con <strong style="color:#f87171">cero ingresos</strong>.</p>
+              <div style="font-size:10px;padding:2px 8px;background:rgba(248,113,113,0.1);color:#f87171;border-radius:4px;align-self:flex-start;">🔴 Reducir exposición</div>
+            </div>
           </div>
 
-          <div class="card">
-            <div class="ibadge">3</div>
-            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Oportunidad en Apparel</div>
-            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;"><strong style="color:var(--text)">Apparel</strong> genera el mayor revenue pero recibe pocas vistas. Aumentar su visibilidad puede impactar significativamente.</p>
-            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(74,222,128,0.1);color:#4ade80;border-radius:4px;display:inline-block;">✅ Priorizar en campañas</div>
+          <div class="card" style="padding:0;overflow:hidden;display:flex;align-items:stretch;flex:1;min-height:0;">
+            <div style="position:relative;width:42%;flex-shrink:0;">
+              <img src="1-product-performance-insight/images/insight_3.png"
+                   class="lightbox-trigger"
+                   style="width:100%;height:100%;object-fit:contain;background:var(--card-bg);border-radius:var(--radius) 0 0 var(--radius);display:block;"
+                   alt="Apparel revenue" loading="lazy">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.3 · Apparel Revenue</div>
+            </div>
+            <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
+              <div class="ibadge">3</div>
+              <div style="font-size:13px;font-weight:600;line-height:1.2;">Oportunidad en Apparel</div>
+              <p style="font-size:11.5px;color:var(--text-secondary);line-height:1.4;"><strong style="color:var(--text)">Apparel</strong> lidera en revenue pero tiene baja visibilidad — alta oportunidad.</p>
+              <div style="font-size:10px;padding:2px 8px;background:rgba(74,222,128,0.1);color:#4ade80;border-radius:4px;align-self:flex-start;">✅ Priorizar en campañas</div>
+            </div>
           </div>
+
         </div>
 
         <div class="info-box" style="background:var(--surface);border:1px solid var(--border-light);">
@@ -940,19 +950,19 @@ GROUP BY
         </div>
 
         <div class="g2">
-          <div class="card" style="border-color:rgba(124,58,237,0.25);padding:16px 18px;">
-            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-mid);margin-bottom:7px;">Tabla 1 · Órdenes</div>
+          <div class="card" style="padding:16px 18px;">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:7px;">Tabla 1 · Órdenes</div>
             <div class="mono-id" style="margin-top:0;margin-bottom:8px;">Shopify_Orders</div>
             <p style="font-size:12px;color:var(--text-secondary);">Una fila por orden. ID, cliente, fecha, total, estado de pago, cupón, ciudad.</p>
           </div>
-          <div class="card" style="border-color:rgba(236,72,153,0.25);padding:16px 18px;">
-            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-end);margin-bottom:7px;">Tabla 2 · Items</div>
-            <div class="mono-id" style="margin-top:0;margin-bottom:8px;color:var(--accent-end);border-color:rgba(236,72,153,0.2);background:rgba(236,72,153,0.05);">Shopify_Orders_Items</div>
+          <div class="card" style="padding:16px 18px;">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:7px;">Tabla 2 · Items</div>
+            <div class="mono-id" style="margin-top:0;margin-bottom:8px;">Shopify_Orders_Items</div>
             <p style="font-size:12px;color:var(--text-secondary);">Una fila por producto. SKU, talla, precio, descuento, categoría, género.</p>
           </div>
         </div>
 
-        <div class="info-box" style="background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);">
+        <div class="info-box" style="background:var(--surface);border:1px solid var(--border-light);">
           → <strong>Próximo paso:</strong> Conexión directa con la API REST de Shopify para automatizar la recolección y eliminar el CSV manual.
         </div>
       </div>
@@ -1014,90 +1024,64 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
     </section>
 
     <!-- ====================================================
-         SLIDE 14 — MÓDULO 2: VISUALIZACIONES
+         SLIDE 14 — MÓDULO 2: ANÁLISIS & HALLAZGOS
     ==================================================== -->
     <section class="slide">
       <div class="slide-content">
-        <span class="label label-pink">Módulo 2 · Análisis visual</span>
-        <h2 class="sec-title">Visualizaciones</h2>
-        <p class="sec-sub">Gráficos clave extraídos del análisis de la tabla maestra de Shopify.</p>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px;">
-
-          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
-            <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-cupones.png"
-                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:140px;"
-                 alt="Ventas con cupones" loading="lazy">
-            <div>
-              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent-end);margin-bottom:4px;">4.1 Cupones</div>
-              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Los cupones son usados mayormente por el género femenino — sobre todo el de BIENVENIDA — concentrados en Surco y Chorrillos.</p>
-            </div>
-          </div>
-
-          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
-            <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-caida-de-ventas.png"
-                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:140px;"
-                 alt="Caída de ventas" loading="lazy">
-            <div>
-              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent-end);margin-bottom:4px;">4.2 Caída de ventas</div>
-              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Desde julio 2024 se detecta una caída sostenida en ventas con descuento, posiblemente por cambio en estrategia comercial.</p>
-            </div>
-          </div>
-
-          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
-            <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-tallas.png"
-                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:140px;"
-                 alt="Distribución por tallas" loading="lazy">
-            <div>
-              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent-end);margin-bottom:4px;">4.3 Tallas</div>
-              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">La talla M concentra el mayor volumen de ventas en todos los géneros — inventario prioritario en esta talla.</p>
-            </div>
-          </div>
-
-          <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
-            <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-mujer.png"
-                 style="width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:140px;"
-                 alt="Segmentación por categoría" loading="lazy">
-            <div>
-              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent-end);margin-bottom:4px;">4.4 Categorías</div>
-              <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Short y Vestido lideran en volumen con mayor peso Unisex. Alta participación de ventas sin descuento.</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ====================================================
-         SLIDE 15 — MÓDULO 2: HALLAZGOS
-    ==================================================== -->
-    <section class="slide">
-      <div class="slide-content">
-        <span class="label label-pink">Módulo 2 · Hallazgos</span>
-        <h2 class="sec-title">Insights clave</h2>
+        <span class="label label-pink">Módulo 2 · Análisis & Hallazgos</span>
+        <h2 class="sec-title">Visualizaciones e Insights</h2>
         <p class="sec-sub">Patrones encontrados en el rendimiento comercial del ecommerce Shopify.</p>
 
-        <div class="g3">
-          <div class="card">
-            <div class="ibadge">1</div>
-            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Cupones segmentados</div>
-            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Los cupones rinden mejor segmentados por <strong style="color:var(--text)">género y zona</strong>. El cupón <strong style="color:var(--text)">BIENVENIDA</strong> es el más usado por mujeres en Surco y Chorrillos.</p>
-            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(74,222,128,0.1);color:#4ade80;border-radius:4px;display:inline-block;">✅ Optimizar targeting</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;height:calc(100vh - 300px);min-height:0;">
+
+          <div class="card" style="padding:0;overflow:hidden;display:flex;align-items:stretch;flex:1;min-height:0;">
+            <div style="position:relative;width:42%;flex-shrink:0;">
+              <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-cupones.png"
+                   class="lightbox-trigger"
+                   style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius) 0 0 var(--radius);display:block;"
+                   alt="Ventas con cupones" loading="lazy">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.1 · Ventas con cupones</div>
+            </div>
+            <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
+              <div class="ibadge">1</div>
+              <div style="font-size:13px;font-weight:600;line-height:1.2;">Cupones segmentados</div>
+              <p style="font-size:11.5px;color:var(--text-secondary);line-height:1.4;">Cupón <strong style="color:var(--text)">BIENVENIDA</strong> lidera entre mujeres — concentrado en Surco y Chorrillos.</p>
+              <div style="font-size:10px;padding:2px 8px;background:rgba(74,222,128,0.1);color:#4ade80;border-radius:4px;align-self:flex-start;">✅ Optimizar targeting</div>
+            </div>
           </div>
 
-          <div class="card">
-            <div class="ibadge">2</div>
-            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Talla M domina</div>
-            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">La talla <strong style="color:var(--text)">M concentra el mayor volumen</strong> de ventas de forma transversal en todos los géneros. Es la talla crítica del negocio.</p>
-            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(251,191,36,0.1);color:#fbbf24;border-radius:4px;display:inline-block;">⚠️ Priorizar stock talla M</div>
+          <div class="card" style="padding:0;overflow:hidden;display:flex;align-items:stretch;flex:1;min-height:0;">
+            <div style="position:relative;width:42%;flex-shrink:0;">
+              <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-tallas.png"
+                   class="lightbox-trigger"
+                   style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius) 0 0 var(--radius);display:block;"
+                   alt="Distribución por tallas" loading="lazy">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.3 · Distribución por tallas</div>
+            </div>
+            <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
+              <div class="ibadge">2</div>
+              <div style="font-size:13px;font-weight:600;line-height:1.2;">Talla M domina</div>
+              <p style="font-size:11.5px;color:var(--text-secondary);line-height:1.4;">Talla <strong style="color:var(--text)">M concentra el mayor volumen</strong> en todos los géneros — es la talla crítica.</p>
+              <div style="font-size:10px;padding:2px 8px;background:rgba(251,191,36,0.1);color:#fbbf24;border-radius:4px;align-self:flex-start;">⚠️ Priorizar stock talla M</div>
+            </div>
           </div>
 
-          <div class="card">
-            <div class="ibadge">3</div>
-            <div style="font-size:13px;font-weight:600;margin-bottom:7px;">Demanda orgánica sólida</div>
-            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">El negocio <strong style="color:var(--text)">no depende de descuentos</strong> para vender. Hay fuerte demanda orgánica, buena percepción de valor y margen para optimizar.</p>
-            <div style="margin-top:10px;font-size:10px;padding:3px 8px;background:rgba(74,222,128,0.1);color:#4ade80;border-radius:4px;display:inline-block;">✅ Reducir dependencia promo</div>
+          <div class="card" style="padding:0;overflow:hidden;display:flex;align-items:stretch;flex:1;min-height:0;">
+            <div style="position:relative;width:42%;flex-shrink:0;">
+              <img src="2-ecommerce-analytics-comercial/images/ecommerce-performance-mujer.png"
+                   class="lightbox-trigger"
+                   style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius) 0 0 var(--radius);display:block;"
+                   alt="Categorías y demanda" loading="lazy">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.4 · Categorías y género</div>
+            </div>
+            <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
+              <div class="ibadge">3</div>
+              <div style="font-size:13px;font-weight:600;line-height:1.2;">Demanda orgánica sólida</div>
+              <p style="font-size:11.5px;color:var(--text-secondary);line-height:1.4;">El negocio <strong style="color:var(--text)">no depende de descuentos</strong> — fuerte demanda natural y margen para optimizar.</p>
+              <div style="font-size:10px;padding:2px 8px;background:rgba(74,222,128,0.1);color:#4ade80;border-radius:4px;align-self:flex-start;">✅ Reducir dependencia promo</div>
+            </div>
           </div>
+
         </div>
 
         <div class="info-box" style="background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.2);">
@@ -1146,46 +1130,54 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
 
         <div class="g2" style="gap:12px;margin-bottom:14px;">
           <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
-            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;">Módulo 1 — GA4</div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(38,116,237,0.6);margin-bottom:10px;">Módulo 1 — GA4</div>
             <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Redirigir inversión hacia Apparel (alto revenue, baja visibilidad)</div></div>
             <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Deprioritizar categorías con tráfico alto y cero revenue</div></div>
             <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Investigar spike de tráfico sin conversión de fin de año</div></div>
           </div>
           <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
-            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-end);margin-bottom:10px;">Módulo 2 — Shopify</div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(236,72,153,0.6);margin-bottom:10px;">Módulo 2 — Shopify</div>
             <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Segmentar cupones por género + zona geográfica</div></div>
             <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Asegurar stock prioritario en talla M para todos los géneros</div></div>
             <div class="ns"><div class="ns-dot"></div><div style="font-size:12px;">Analizar caída de ventas con descuento desde julio 2024</div></div>
           </div>
         </div>
 
-        <div class="info-box" style="background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);margin-bottom:14px;">
-          <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent-mid);">→ Próximos pasos técnicos</span><br>
+        <div class="info-box" style="background:var(--surface);border:1px solid var(--border);margin-bottom:14px;">
+          <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);">→ Próximos pasos técnicos</span><br>
           <span style="font-size:12px;color:var(--text-secondary);margin-top:6px;display:block;">
             · Conectar directamente con la API REST de Shopify para eliminar el CSV manual<br>
-            · Actualizar query de GA4 en tiempo real usando <code style="color:var(--accent-mid);font-size:11px;">CURRENT_DATE()</code> en lugar de fechas hardcodeadas
+            · Actualizar query de GA4 en tiempo real usando <code style="color:var(--text-secondary);font-size:11px;">CURRENT_DATE()</code> en lugar de fechas hardcodeadas
           </span>
         </div>
 
         <div class="author-card">
-
+          <img src="https://storage.googleapis.com/angel-assets/profile/Foto%20usmp%20ci%CC%81culo.png"
+               alt="Angel García"
+               style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;">
           <div style="flex:1;">
             <div class="a-name">Angel García</div>
             <div class="a-meta">Analista de Datos · Lima, Perú</div>
             <div class="a-links">
-              <a href="https://www.linkedin.com/in/angelgarciachanga" class="a-link" target="_blank">↗ LinkedIn</a>
-              <a href="https://youtube.com/@angelgarciadatablog" class="a-link" target="_blank">↗ @angelgarciadatablog</a>
+              <a href="https://www.linkedin.com/in/angelgarciachanga" class="a-link" target="_blank" rel="noopener noreferrer">↗ LinkedIn</a>
+              <a href="https://youtube.com/@angelgarciadatablog" class="a-link" target="_blank" rel="noopener noreferrer">↗ @angelgarciadatablog</a>
             </div>
           </div>
           <div style="text-align:right;flex-shrink:0;">
             <div style="font-size:10px;color:var(--text-secondary);margin-bottom:4px;">Repositorio</div>
-            <span style="font-size:11px;font-family:monospace;color:var(--accent-mid);background:rgba(124,58,237,0.08);padding:4px 8px;border-radius:4px;white-space:nowrap;">ecommerce-performance-insights</span>
+            <span style="font-size:11px;font-family:monospace;color:var(--text-secondary);background:var(--surface);padding:4px 8px;border-radius:4px;border:1px solid var(--border);white-space:nowrap;">ecommerce-performance-insights</span>
           </div>
         </div>
       </div>
     </section>
 
   </div><!-- /slides-container -->
+
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <img id="lightbox-img" src="" alt="">
+    <button id="lightbox-close" aria-label="Cerrar">×</button>
+  </div>
 
   <!-- Navigation -->
   <button class="nav-btn prev" id="prevBtn" aria-label="Slide anterior">&#8592;</button>
@@ -1277,10 +1269,30 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
 
     /* Keyboard */
     document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) { lightbox.classList.remove('open'); return; }
       if (['ArrowRight', ' ', 'ArrowDown'].includes(e.key)) { e.preventDefault(); goTo(current + 1); }
       if (['ArrowLeft', 'ArrowUp'].includes(e.key))         { e.preventDefault(); goTo(current - 1); }
       if (e.key === 'Home') goTo(0);
       if (e.key === 'End')  goTo(total - 1);
+    });
+
+    /* Lightbox */
+    const lightbox    = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    document.querySelectorAll('.lightbox-trigger').forEach(img => {
+      img.addEventListener('click', e => {
+        e.stopPropagation();
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+      });
+    });
+
+    lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
+    document.getElementById('lightbox-close').addEventListener('click', e => {
+      e.stopPropagation();
+      lightbox.classList.remove('open');
     });
 
     /* Touch swipe */
