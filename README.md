@@ -1,49 +1,67 @@
-# Ecommerce Performance Insights – Proyecto integral de análisis de datos
+# Ecommerce Performance Insights
 
-Este proyecto integral analiza el desempeño de las ventas en una tienda ecommerce creada en Shopify. El análisis se divide en dos módulos:
-
-## [**Módulo 1: product-performance-insight (Análisis de rendimiento de producto)**](1-product-performance-insight)  
-Se examinan las vistas de producto, los productos agregados al carrito y las ventas, con el objetivo de identificar qué artículos generan mayor interés y cuáles convierten mejor.
-
-## [**Módulo 2: ecommerce-performance-insights (Análisis de desempeño del ecommerce)**](2-ecommerce-analytics-comercial)   
-Se analiza la información de ventas a un nivel más amplio, explorando aspectos como los descuentos aplicados, las ventas por categoría y la recurrencia de los clientes, con el fin de descubrir insights que ayuden a optimizar la estrategia comercial.
-
+Proyecto integral de análisis de datos sobre el desempeño de un ecommerce creado en Shopify. Se estructura en dos módulos independientes que abordan el rendimiento desde perspectivas complementarias: el comportamiento del producto (basado en GA4) y el análisis comercial (basado en datos de pedidos).
 
 ---
 
+## Módulos
 
-## 🛠️ Herramientas y tecnologías
+### [Módulo 1 · Product Performance Insight](1-product-performance-insight)
 
-- **BigQuery** – Almacenamiento y análisis de grandes volúmenes de datos.
-- **SQL** – Extracción y manipulación de datos.
-- **Google Analytics 4** – Métricas de comportamiento de usuarios.
-- **Shopify** – Datos de pedidos y clientes.
+**¿Los productos más vistos son los que generan mayores ingresos?**
 
+Analiza el ciclo completo de conversión por producto — vistas, agregados al carrito, inicios de checkout y compras — a partir de eventos de GA4 procesados en BigQuery. Permite identificar productos con alta exposición pero baja conversión y detectar oportunidades por categoría.
 
-## 🗂️ Estructura del repositorio
+🔗 [Ver dashboard en Looker Studio](https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7)
+
+**Herramientas:** Google Analytics 4 · BigQuery · SQL · Looker Studio
+
+---
+
+### [Módulo 2 · Ecommerce Analytics Comercial](2-ecommerce-analytics-comercial)
+
+**¿Qué patrones de compra, anomalías y tendencias se pueden extraer de los pedidos del ecommerce?**
+
+Analiza el rendimiento comercial a partir de exportaciones de Shopify, explorando ventas por categoría, uso de cupones, preferencias de tallas y género, distribución geográfica y comparativa interanual.
+
+🔗 [Ver dashboard en Looker Studio](https://lookerstudio.google.com/reporting/feceecaa-0ba9-4750-8b55-0ab20da5a5b8)
+
+**Herramientas:** Shopify · BigQuery · SQL · Looker Studio
+
+---
+
+## Presentación
+
+Existe una presentación interactiva que resume los hallazgos de ambos módulos:
+🔗 [Ver presentación](index.html)
+
+---
+
+## Estructura del repositorio
+
 ```plaintext
 ecommerce-performance-insights/
-├── README.md                         # Descripción general del proyecto integral
-├── 1-product-performance-insight/    # Análisis de rendimiento por producto de un ecommerce
-│   ├── README.md                      
-│   ├── analisis/
-│   ├── consultas/
-│   ├── images/
-│   └── dashboard/
-├── 2-ecommerce-analytics-comercial/  # Rendimiento general del ecommerce y análisis comercial
+├── README.md
+├── index.html                                   # Presentación interactiva
+├── 1-product-performance-insight/
 │   ├── README.md
-│   ├── analisis/
-│   ├── consultas/
+│   ├── analysis/                                # Desarrollo, lógica y hallazgos
+│   ├── queries/                                 # Consultas SQL (GA4 + BigQuery)
 │   ├── images/
 │   └── dashboard/
-
+└── 2-ecommerce-analytics-comercial/
+    ├── README.md
+    ├── analysis/                                # Desarrollo, lógica y hallazgos
+    ├── queries/                                 # Consultas SQL (Shopify Orders)
+    ├── files_csv/                               # Datos exportados desde Shopify
+    ├── images/
+    └── dashboard/
 ```
 
-## 👤 Autor
+---
 
-**Angel García**  
-Analista de Datos | Lima, Perú  
-👤 Perfil profesional: 🔗 [LinkedIn](https://www.linkedin.com/in/angelgarciachanga)  
-🎥 Canal educativo: [@angelgarciadatablog](https://youtube.com/@angelgarciadatablog)  
-💼 Especializado en análsis de datos 
+## Autor
 
+**Angel García**
+Analista de Datos · Lima, Perú
+[LinkedIn](https://www.linkedin.com/in/angelgarciachanga) · [YouTube @angelgarciadatablog](https://youtube.com/@angelgarciadatablog)
