@@ -33,7 +33,7 @@ Analiza el rendimiento comercial a partir de exportaciones de Shopify, explorand
 ## Presentación
 
 Existe una presentación interactiva que resume los hallazgos de ambos módulos:
-🔗 [Ver presentación](index.html)
+🔗 [Ver presentación](https://www.angelgarciadatablog.com/ecommerce-performance-insights/)
 
 ---
 
