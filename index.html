@@ -155,6 +155,12 @@
     }
     .slide.active { opacity: 1; pointer-events: all; }
 
+    /* Ajustar padding superior para slides con mucho contenido */
+    .slide.slide-compact {
+      padding: 40px 24px 72px;
+      align-items: flex-start;
+    }
+
     .slide-content { width: 100%; max-width: 880px; }
 
     /* =========================================================
@@ -420,6 +426,53 @@
 
     /* Responsive */
     @media (max-width: 640px) {
+      /* Mobile: scroll vertical */
+      html, body {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: auto;
+      }
+
+      .slides-container {
+        height: auto;
+        overflow: visible;
+        position: relative;
+      }
+
+      .slide {
+        position: relative;
+        opacity: 1 !important;
+        pointer-events: all !important;
+        transform: none !important;
+        height: auto;
+        min-height: 100vh;
+        padding: 60px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .slide:last-child {
+        border-bottom: none;
+      }
+
+      /* Ocultar controles de navegación horizontal */
+      .nav-btn,
+      .slide-dots,
+      .keyboard-hint,
+      .slide-counter,
+      .progress-bar {
+        display: none !important;
+      }
+
+      /* Mantener fullscreen */
+      .top-ui {
+        top: 20px;
+        right: 20px;
+      }
+
+      /* Ajustes de grids */
       .g2, .g3 { grid-template-columns: 1fr; }
       .pipeline { flex-direction: column; }
       .p-arr { transform: rotate(90deg); padding: 4px 0; margin-bottom: 0; }
@@ -429,7 +482,13 @@
       .trans-grid .f-arr-center { display: none; }
       .mod-num { display: none; }
       .stats-row { flex-wrap: wrap; gap: 10px; }
-      .stat + .stat { border-left: none; border-top: 1px solid var(--border-light); }
+      .stat + .stat { border-left: none; border-top: 1px solid var(--border-light); padding-top: 10px; }
+
+      /* Resetear ajuste de padding en mobile */
+      .slide.slide-compact {
+        padding: 60px 20px;
+        align-items: center;
+      }
     }
   </style>
 </head>
@@ -438,7 +497,7 @@
   <div class="progress-bar" id="progressBar"></div>
 
   <div class="top-ui">
-    <span class="slide-counter" id="slideCounter">1 / 15</span>
+    <span class="slide-counter" id="slideCounter">1 / 17</span>
     <button class="fullscreen-btn" id="fsBtn" title="Pantalla completa">⛶</button>
   </div>
 
@@ -463,7 +522,7 @@
         </h1>
 
         <p style="font-size:16px;color:var(--text-secondary);margin-bottom:28px;max-width:480px;">
-          Análisis integral de una tienda Shopify combinando datos de comportamiento (GA4) y datos comerciales.
+          Análisis de rendimiento de ecommerce desde dos perspectivas: comportamiento de usuarios (GA4) y rendimiento comercial (Shopify).
         </p>
 
         <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px;">
@@ -491,61 +550,307 @@
     </section>
 
     <!-- ====================================================
-         SLIDE 2 — VISIÓN GENERAL
+         SLIDE 2 — OBSERVACIÓN / CONTEXTO
     ==================================================== -->
     <section class="slide">
       <div class="slide-content">
-        <span class="label label-grad">Estructura del proyecto</span>
-        <h2 class="sec-title">¿Qué analiza este proyecto?</h2>
-        <p class="sec-sub">Dos módulos independientes con fuentes de datos distintas que se complementan.</p>
+        <span class="label label-purple">Método Científico · Observación</span>
+        <h2 class="sec-title">Contexto del proyecto</h2>
+        <p class="sec-sub">Análisis de datos aplicado a ecommerce desde dos perspectivas complementarias.</p>
 
-        <div class="g2">
-          <!-- Módulo 1 -->
-          <div class="card" style="border-color:rgba(38,116,237,0.3);">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-              <span style="width:38px;height:38px;border-radius:10px;background:rgba(38,116,237,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#60a5fa;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg></span>
+        <div class="card" style="margin-bottom:16px;">
+          <h3 style="font-size:16px;font-weight:600;margin-bottom:12px;">Descripción del proyecto</h3>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px;">
+            Proyecto de análisis de datos enfocado en optimizar el rendimiento de negocios ecommerce mediante el análisis de dos perspectivas independientes:
+          </p>
+
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(38,116,237,0.05);border-radius:8px;border:1px solid rgba(38,116,237,0.2);">
+              <span style="font-size:20px;">📊</span>
               <div>
-                <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:1px;">Módulo 1</div>
-                <div style="font-size:14px;font-weight:700;">Product Performance</div>
+                <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Perspectiva 1: Comportamiento de usuarios</div>
+                <div style="font-size:12px;color:var(--text-secondary);">Análisis de eventos de Google Analytics 4 para entender el ciclo de conversión por producto</div>
               </div>
             </div>
-            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Vistas, carrito, checkout y compras de productos desde GA4 BigQuery.</p>
-            <div style="display:flex;gap:5px;flex-wrap:wrap;">
-              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">GA4</span>
-              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">BigQuery público</span>
-              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">Looker Studio</span>
-            </div>
-          </div>
 
-          <!-- Módulo 2 -->
-          <div class="card" style="border-color:rgba(236,72,153,0.3);">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-              <span style="width:38px;height:38px;border-radius:10px;background:rgba(236,72,153,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#f472b6;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(236,72,153,0.05);border-radius:8px;border:1px solid rgba(236,72,153,0.2);">
+              <span style="font-size:20px;">💰</span>
               <div>
-                <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-end);margin-bottom:1px;">Módulo 2</div>
-                <div style="font-size:14px;font-weight:700;">Analytics Comercial</div>
+                <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Perspectiva 2: Rendimiento comercial</div>
+                <div style="font-size:12px;color:var(--text-secondary);">Análisis de datos transaccionales de Shopify para identificar patrones de compra y optimización de ventas</div>
               </div>
-            </div>
-            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Órdenes de Shopify: descuentos, cupones, categorías, tallas y geografía.</p>
-            <div style="display:flex;gap:5px;flex-wrap:wrap;">
-              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Shopify</span>
-              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">BigQuery</span>
-              <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Looker Studio</span>
             </div>
           </div>
         </div>
 
-        <div class="stats-row">
-          <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">queries SQL</div></div>
-          <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">dashboards live</div></div>
-          <div class="stat"><div class="stat-n gt">6+</div><div class="stat-l">insights accionables</div></div>
-          <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">fuentes de datos</div></div>
+        <div class="info-box" style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);">
+          <strong style="color:var(--accent-mid);">Nota importante:</strong> Ambos módulos analizan <strong>negocios diferentes</strong> (datos públicos de Google vs. datos simulados de Shopify), por lo que <strong>no se relacionan ni integran resultados</strong>. Sin embargo, en la práctica profesional, lo ideal es aplicar ambas perspectivas (GA4 + ventas) al <strong>mismo negocio</strong> para obtener una visión completa del rendimiento del ecommerce.
+        </div>
+
+        <div style="margin-top:20px;padding:14px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:10px;">Contexto profesional</div>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            Este proyecto refleja el trabajo real realizado en mi experiencia profesional: analizar un ecommerce tanto a nivel de comportamiento de usuarios (GA4) como a nivel de ventas transaccionales (Shopify), con el objetivo de convertir datos en decisiones accionables.
+          </p>
         </div>
       </div>
     </section>
 
     <!-- ====================================================
-         SLIDE 3 — MÓDULO 1: PORTADA
+         SLIDE 3 — PROBLEMA + OBJETIVOS + JUSTIFICACIÓN
+    ==================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <span class="label label-purple">Método Científico · Problema y Objetivos</span>
+        <h2 class="sec-title">Planteamiento del problema</h2>
+        <p class="sec-sub">Preguntas de investigación que guían el análisis de cada módulo.</p>
+
+        <div style="margin-bottom:24px;">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(38,116,237,0.8);margin-bottom:10px;">Módulo 1 — Análisis de Comportamiento (GA4)</div>
+          <div class="q-card" style="border-color:rgba(38,116,237,0.4);background:linear-gradient(135deg, rgba(38,116,237,0.07), rgba(38,116,237,0.12));">
+            ¿Lo que más muestro es lo que más se vende?
+          </div>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            Analizar la relación entre <strong>vistas de producto</strong> y <strong>ventas/revenue generado</strong> para identificar productos con alta exposición pero baja conversión.
+          </p>
+        </div>
+
+        <div style="margin-bottom:24px;">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(236,72,153,0.8);margin-bottom:10px;">Módulo 2 — Análisis Comercial (Shopify)</div>
+          <div class="q-card" style="border-color:rgba(236,72,153,0.4);background:linear-gradient(135deg, rgba(236,72,153,0.07), rgba(236,72,153,0.12));">
+            ¿Cómo impactan los descuentos, cupones y categorías en las ventas del ecommerce?
+          </div>
+          <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            Identificar <strong>patrones comerciales</strong> que afectan la rentabilidad: descuentos, uso de cupones, preferencias de tallas, categorías y distribución geográfica.
+          </p>
+        </div>
+
+        <div class="card" style="padding:18px;">
+          <h3 style="font-size:14px;font-weight:600;margin-bottom:12px;">Objetivos generales del proyecto</h3>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <span style="color:var(--accent-mid);font-size:18px;flex-shrink:0;">1.</span>
+              <div style="font-size:12px;color:var(--text-secondary);">Evaluar la eficiencia del funnel de conversión y la relación vistas-ventas por producto</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <span style="color:var(--accent-mid);font-size:18px;flex-shrink:0;">2.</span>
+              <div style="font-size:12px;color:var(--text-secondary);">Identificar patrones comerciales que optimicen la rentabilidad del negocio</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <span style="color:var(--accent-mid);font-size:18px;flex-shrink:0;">3.</span>
+              <div style="font-size:12px;color:var(--text-secondary);">Generar recomendaciones basadas en datos para mejorar ROI y márgenes</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box" style="background:var(--surface);border:1px solid var(--border);">
+          <strong>Justificación:</strong> Alinear inversión publicitaria con productos rentables, optimizar estrategia de descuentos/cupones y mejorar gestión de inventario basada en demanda real.
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 4 — FUENTES DE DATOS
+    ==================================================== -->
+    <section class="slide slide-compact">
+      <div class="slide-content" style="max-width:900px;">
+        <span class="label label-purple">Método Científico · Recolección de Datos</span>
+        <h2 class="sec-title">Fuentes de datos utilizadas</h2>
+        <p class="sec-sub">Dos fuentes independientes que alimentan cada módulo de análisis.</p>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <!-- Fuente 1: GA4 -->
+          <div class="card" style="border-color:rgba(38,116,237,0.3);">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <span style="width:42px;height:42px;border-radius:10px;background:rgba(38,116,237,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#60a5fa;font-size:20px;">📊</span>
+              <div>
+                <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(38,116,237,0.8);">Módulo 1</div>
+                <div style="font-size:16px;font-weight:700;">Google Analytics 4 — BigQuery público</div>
+              </div>
+            </div>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
+              Dataset de muestra proporcionado por Google con eventos de comportamiento de usuarios en un ecommerce.
+            </p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+              <span class="badge" style="font-size:10px;">Granularidad: evento por usuario</span>
+              <span class="badge" style="font-size:10px;">Periodo: Nov 2020 - actualidad</span>
+            </div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;">Eventos capturados:</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">view_item</span>
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">add_to_cart</span>
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">begin_checkout</span>
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(38,116,237,0.1);color:#60a5fa;">purchase</span>
+            </div>
+            <div class="mono-id" style="margin-top:12px;">
+              <a href="https://console.cloud.google.com/bigquery?ws=!1m4!1m3!3m2!1sbigquery-public-data!2sga4_obfuscated_sample_ecommerce" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;text-decoration-style:dashed;">
+                bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*
+              </a>
+            </div>
+          </div>
+
+          <!-- Fuente 2: Shopify -->
+          <div class="card" style="border-color:rgba(236,72,153,0.3);">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <span style="width:42px;height:42px;border-radius:10px;background:rgba(236,72,153,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#f472b6;font-size:20px;">🛍️</span>
+              <div>
+                <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(236,72,153,0.8);">Módulo 2</div>
+                <div style="font-size:16px;font-weight:700;">Shopify Orders — Exportación CSV</div>
+              </div>
+            </div>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
+              Datos simulados realistas de una tienda ficticia en Shopify. El análisis es replicable a cualquier tienda con la misma estructura de exportación.
+            </p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+              <span class="badge" style="font-size:10px;">Granularidad: orden + items</span>
+              <span class="badge" style="font-size:10px;">Datos simulados</span>
+            </div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;">Campos clave:</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">cliente</span>
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">productos</span>
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">descuentos</span>
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">cupones</span>
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">tallas</span>
+              <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">ciudades</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box" style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);margin-top:16px;">
+          <strong>Importante:</strong> Ambas fuentes son <strong>independientes</strong> y corresponden a negocios diferentes. No hay integración de datos entre módulos.
+        </div>
+
+        <div class="info-box" style="background:var(--surface);border:1px solid var(--border);margin-top:10px;">
+          🔜 <strong>Próxima evolución:</strong> Conexión directa con API REST de Shopify para automatizar la recolección y eliminar exportación manual CSV.
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 5 — STACK TECNOLÓGICO
+    ==================================================== -->
+    <section class="slide slide-compact">
+      <div class="slide-content">
+        <span class="label label-purple">Método Científico · Stack Tecnológico</span>
+        <h2 class="sec-title">Herramientas y tecnologías utilizadas</h2>
+        <p class="sec-sub">Pipelines independientes para cada módulo de análisis.</p>
+
+        <div style="margin-bottom:24px;">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(38,116,237,0.8);margin-bottom:12px;">Pipeline Módulo 1 — Análisis de Comportamiento</div>
+          <div style="background:var(--surface);border-radius:var(--radius-lg);padding:20px;border:1px solid rgba(38,116,237,0.2);">
+            <div class="pipeline">
+              <div class="p-step">
+                <div class="p-box" style="border-color:rgba(38,116,237,0.3);background:rgba(38,116,237,0.07);">
+                  <div style="margin-bottom:5px;color:rgba(38,116,237,0.8);">📊</div>
+                  <div>GA4 Público</div>
+                  <div class="p-lbl">Eventos de usuarios</div>
+                </div>
+              </div>
+              <span class="p-arr">→</span>
+              <div class="p-step">
+                <div class="p-box" style="border-color:rgba(38,116,237,0.3);background:rgba(38,116,237,0.07);">
+                  <div style="margin-bottom:5px;color:rgba(38,116,237,0.8);">💾</div>
+                  <div>BigQuery</div>
+                  <div class="p-lbl">Data warehouse</div>
+                </div>
+              </div>
+              <span class="p-arr">→</span>
+              <div class="p-step">
+                <div class="p-box" style="border-color:rgba(38,116,237,0.3);background:rgba(38,116,237,0.07);">
+                  <div style="margin-bottom:5px;color:rgba(38,116,237,0.8);">⚙️</div>
+                  <div>SQL Query</div>
+                  <div class="p-lbl">Transformación</div>
+                </div>
+              </div>
+              <span class="p-arr">→</span>
+              <div class="p-step">
+                <div class="p-box" style="border-color:rgba(38,116,237,0.3);background:rgba(38,116,237,0.07);">
+                  <div style="margin-bottom:5px;color:rgba(38,116,237,0.8);">📈</div>
+                  <div>Looker Studio</div>
+                  <div class="p-lbl">Dashboard</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(236,72,153,0.8);margin-bottom:12px;">Pipeline Módulo 2 — Análisis Comercial</div>
+          <div style="background:var(--surface);border-radius:var(--radius-lg);padding:20px;border:1px solid rgba(236,72,153,0.2);">
+            <div class="pipeline">
+              <div class="p-step">
+                <div class="p-box" style="border-color:rgba(236,72,153,0.3);background:rgba(236,72,153,0.07);">
+                  <div style="margin-bottom:5px;color:rgba(236,72,153,0.8);">🛍️</div>
+                  <div>Shopify CSV</div>
+                  <div class="p-lbl">Export manual</div>
+                </div>
+              </div>
+              <span class="p-arr">→</span>
+              <div class="p-step">
+                <div class="p-box" style="border-color:rgba(236,72,153,0.3);background:rgba(236,72,153,0.07);">
+                  <div style="margin-bottom:5px;color:rgba(236,72,153,0.8);">💾</div>
+                  <div>BigQuery</div>
+                  <div class="p-lbl">Tabla base</div>
+                </div>
+              </div>
+              <span class="p-arr">→</span>
+              <div class="p-step">
+                <div class="p-box" style="border-color:rgba(236,72,153,0.3);background:rgba(236,72,153,0.07);">
+                  <div style="margin-bottom:5px;color:rgba(236,72,153,0.8);">⚙️</div>
+                  <div>SQL Views</div>
+                  <div class="p-lbl">2 tablas procesadas</div>
+                </div>
+              </div>
+              <span class="p-arr">→</span>
+              <div class="p-step">
+                <div class="p-box" style="border-color:rgba(236,72,153,0.3);background:rgba(236,72,153,0.07);">
+                  <div style="margin-bottom:5px;color:rgba(236,72,153,0.8);">📈</div>
+                  <div>Looker Studio</div>
+                  <div class="p-lbl">Dashboard</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:18px;">
+          <h3 style="font-size:14px;font-weight:600;margin-bottom:14px;">Tecnologías utilizadas</h3>
+          <div class="g2" style="gap:12px;">
+            <div style="padding:10px;background:var(--surface);border-radius:8px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Google Analytics 4</div>
+              <div style="font-size:11px;color:var(--text-secondary);">Captura de eventos de comportamiento</div>
+            </div>
+            <div style="padding:10px;background:var(--surface);border-radius:8px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Shopify</div>
+              <div style="font-size:11px;color:var(--text-secondary);">Plataforma ecommerce y fuente transaccional</div>
+            </div>
+            <div style="padding:10px;background:var(--surface);border-radius:8px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">BigQuery</div>
+              <div style="font-size:11px;color:var(--text-secondary);">Data warehouse en la nube</div>
+            </div>
+            <div style="padding:10px;background:var(--surface);border-radius:8px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">SQL</div>
+              <div style="font-size:11px;color:var(--text-secondary);">Transformación y análisis de datos</div>
+            </div>
+            <div style="padding:10px;background:var(--surface);border-radius:8px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Looker Studio</div>
+              <div style="font-size:11px;color:var(--text-secondary);">Dashboards interactivos y visualización</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-row" style="margin-top:20px;">
+          <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">fuentes independientes</div></div>
+          <div class="stat"><div class="stat-n gt">4</div><div class="stat-l">queries SQL</div></div>
+          <div class="stat"><div class="stat-n gt">2</div><div class="stat-l">dashboards live</div></div>
+          <div class="stat"><div class="stat-n gt">6+</div><div class="stat-l">insights accionables</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 6 — SEPARADOR MÓDULO 1
     ==================================================== -->
     <section class="slide">
       <div class="slide-content" style="position:relative;overflow:hidden;">
@@ -566,71 +871,23 @@
         </div>
 
         <div class="q-card">
-          ¿Los productos más vistos son los que generan mayores ingresos?
+          ¿Lo que más muestro es lo que más se vende?
         </div>
 
         <p style="font-size:13px;color:var(--text-secondary);">
-          Se analiza el ciclo completo del producto evaluando eventos de conversión registrados en GA4,
-          desde las vistas hasta las compras, a través del dataset público de Google en BigQuery.
+          Se analiza la <strong>relación entre vistas de producto y ventas/revenue generado</strong>, evaluando eventos de conversión registrados en GA4, desde las vistas hasta las compras, a través del dataset público de Google en BigQuery.
         </p>
       </div>
     </section>
 
     <!-- ====================================================
-         SLIDE 4 — MÓDULO 1: OBJETIVOS
+         SLIDE 7 — MÓDULO 1: ANÁLISIS DE DATOS (Transformación)
     ==================================================== -->
     <section class="slide">
       <div class="slide-content">
-        <span class="label label-blue">Módulo 1 · Objetivos</span>
-        <h2 class="sec-title">¿Qué busca responder?</h2>
-        <p class="sec-sub">Tres ejes centrales guían la exploración de los datos de GA4.</p>
-
-        <div class="card" style="padding:0;">
-          <div class="obj">
-            <div class="obj-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-            <div>
-              <div class="obj-t">Evaluar el ciclo completo del producto</div>
-              <div class="obj-d">Desde las vistas hasta la compra. Se construye un embudo de conversión por producto usando eventos de GA4: view_item → add_to_cart → begin_checkout → purchase.</div>
-            </div>
-          </div>
-          <div class="obj">
-            <div class="obj-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-            <div>
-              <div class="obj-t">Medir la eficiencia de cada producto</div>
-              <div class="obj-d">Comparar el volumen de visualizaciones con las ventas reales para detectar productos con alta exposición pero baja conversión.</div>
-            </div>
-          </div>
-          <div class="obj">
-            <div class="obj-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17H8v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/></svg></div>
-            <div>
-              <div class="obj-t">Generar insights accionables</div>
-              <div class="obj-d">Por producto y categoría, para mejorar decisiones de marketing, ajustar inversión publicitaria y priorizar según rentabilidad real.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ====================================================
-         SLIDE 5 — MÓDULO 1: DATOS Y TRANSFORMACIÓN
-    ==================================================== -->
-    <section class="slide">
-      <div class="slide-content">
-        <span class="label label-blue">Módulo 1 · Datos</span>
-        <h2 class="sec-title">Fuente de datos y transformación</h2>
-        <p class="sec-sub">De datos anidados en GA4 a una tabla plana por producto y fecha.</p>
-
-        <!-- Data source -->
-        <div class="card" style="margin-bottom:16px;padding:16px 20px;">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-            <span style="width:36px;height:36px;border-radius:9px;background:rgba(38,116,237,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#60a5fa;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg></span>
-            <div>
-              <div style="font-size:14px;font-weight:600;">Google Analytics 4 – BigQuery público</div>
-              <div style="font-size:12px;color:var(--text-secondary);">Dataset de muestra de Google. Granularidad: evento por usuario.</div>
-            </div>
-          </div>
-          <div class="mono-id"><a href="https://console.cloud.google.com/bigquery?ws=!1m4!1m3!3m2!1sbigquery-public-data!2sga4_obfuscated_sample_ecommerce" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;text-decoration-style:dashed;text-underline-offset:3px;text-decoration-color:var(--border);">bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*</a></div>
-        </div>
+        <span class="label label-blue">Módulo 1 · Análisis de Datos</span>
+        <h2 class="sec-title">De eventos anidados a métricas accionables</h2>
+        <p class="sec-sub">Transformación de la tabla GA4 en BigQuery.</p>
 
         <!-- Funnel -->
         <div style="background:var(--surface);border-radius:var(--radius);padding:16px;margin-bottom:16px;">
@@ -656,7 +913,7 @@
               <div class="trans-item"><span style="color:#f87171;">✗</span> Difícil de analizar directo</div>
               <div class="trans-item"><span style="color:#f87171;">✗</span> 1 fila = 1 evento</div>
             </div>
-            <div style="text-align:center;font-size:22px;color:var(--text-secondary);">→</div>
+            <div style="text-align:center;font-size:22px;color:var(--text-secondary);" class="f-arr-center">→</div>
             <div class="trans-col">
               <div class="trans-col-title">Tabla reestructurada</div>
               <div class="trans-item"><span style="color:#4ade80;">✓</span> UNNEST(items) aplicado</div>
@@ -665,17 +922,28 @@
             </div>
           </div>
         </div>
+
+        <div class="info-box" style="background:var(--surface);border:1px solid var(--border);margin-top:16px;">
+          <strong>Enfoque del análisis:</strong> Aunque el embudo completo está disponible, el análisis se centra en la <strong>relación entre vistas (view_item) y ventas (purchase/revenue)</strong> para identificar productos con alta exposición pero baja conversión.
+        </div>
       </div>
     </section>
 
     <!-- ====================================================
-         SLIDE 6 — MÓDULO 1: SQL
+         SLIDE 8 — MÓDULO 1: ANÁLISIS DE DATOS (Query SQL)
     ==================================================== -->
     <section class="slide">
       <div class="slide-content">
-        <span class="label label-blue">Módulo 1 · SQL</span>
-        <h2 class="sec-title">Consulta principal — GA4 BigQuery</h2>
-        <p class="sec-sub">Construye la tabla maestra agregando eventos de conversión por producto y fecha.</p>
+        <span class="label label-blue">Módulo 1 · Análisis de Datos</span>
+        <h2 class="sec-title">Consulta SQL principal — GA4 BigQuery</h2>
+        <p class="sec-sub">Pivoteo de eventos a métricas por producto y fecha.</p>
+
+        <div style="background:var(--surface);border-radius:var(--radius);padding:12px;margin-bottom:12px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Query 1 de 2 (Principal - Analizada)</div>
+          <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+            <strong>Propósito:</strong> Analizar el funnel de conversión por producto (view_item → add_to_cart → begin_checkout → purchase) con datos históricos para identificar la relación entre vistas y ventas.
+          </div>
+        </div>
 
         <pre class="code-wrap"><code class="language-sql">SELECT
   -- Fecha del evento (de YYYYMMDD a DATE)
@@ -706,7 +974,7 @@ WHERE
   REGEXP_EXTRACT(_TABLE_SUFFIX, r"[0-9]+")
     BETWEEN FORMAT_DATE("%Y%m%d", "2020-11-01")
     AND     FORMAT_DATE("%Y%m%d", CURRENT_DATE())
-  AND items.item_id &lt;&gt; '(not set)'
+  AND items.item_id <> '(not set)'
 
 GROUP BY
   PARSE_DATE('%Y%m%d', event_date),
@@ -717,16 +985,20 @@ GROUP BY
           <span class="code-tag">▸ <strong>_TABLE_SUFFIX</strong> — filtra tablas por rango de fechas</span>
           <span class="code-tag">▸ <strong>SUM + CASE WHEN</strong> — pivota eventos a columnas</span>
         </div>
+
+        <div style="background:rgba(38,116,237,0.08);border:1px solid rgba(38,116,237,0.25);border-radius:var(--radius);padding:10px;margin-top:12px;font-size:11px;color:var(--text-secondary);">
+          <strong>Query 2 de 2 (Real-time - Dashboard):</strong> Versión en tiempo real de esta query para monitoreo continuo del product performance (no analizada directamente en este proyecto).
+        </div>
       </div>
     </section>
 
     <!-- ====================================================
-         SLIDE 7 — MÓDULO 1: ANÁLISIS & HALLAZGOS
+         SLIDE 9 — MÓDULO 1: RESULTADOS
     ==================================================== -->
     <section class="slide">
       <div class="slide-content">
-        <span class="label label-blue">Módulo 1 · Análisis & Hallazgos</span>
-        <h2 class="sec-title">Visualizaciones e Insights</h2>
+        <span class="label label-blue">Módulo 1 · Resultados</span>
+        <h2 class="sec-title">Hallazgos clave</h2>
         <p class="sec-sub">Tres patrones críticos identificados en el comportamiento de productos.</p>
 
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;height:calc(100vh - 300px);min-height:0;">
@@ -737,7 +1009,7 @@ GROUP BY
                    class="lightbox-trigger"
                    style="width:100%;height:100%;object-fit:contain;background:var(--card-bg);border-radius:var(--radius) 0 0 var(--radius);display:block;"
                    alt="Tráfico sin conversión" loading="lazy">
-              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.1 · Revenue & Views</div>
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">Revenue & Views</div>
             </div>
             <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
               <div class="ibadge">1</div>
@@ -753,7 +1025,7 @@ GROUP BY
                    class="lightbox-trigger"
                    style="width:100%;height:100%;object-fit:contain;background:var(--card-bg);border-radius:var(--radius) 0 0 var(--radius);display:block;"
                    alt="Categorías sin revenue" loading="lazy">
-              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.2 · Product Performance</div>
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">Product Performance</div>
             </div>
             <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
               <div class="ibadge">2</div>
@@ -769,7 +1041,7 @@ GROUP BY
                    class="lightbox-trigger"
                    style="width:100%;height:100%;object-fit:contain;background:var(--card-bg);border-radius:var(--radius) 0 0 var(--radius);display:block;"
                    alt="Apparel revenue" loading="lazy">
-              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.3 · Apparel Revenue</div>
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">Apparel Revenue</div>
             </div>
             <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
               <div class="ibadge">3</div>
@@ -780,36 +1052,68 @@ GROUP BY
           </div>
 
         </div>
-
-        <div class="info-box" style="background:var(--surface);border:1px solid var(--border-light);">
-          → <strong>Recomendación:</strong> Realinear inversión publicitaria desde categorías con alto tráfico/cero revenue
-          hacia <strong>Apparel</strong> y productos con mayor potencial de conversión probado.
-        </div>
       </div>
     </section>
 
     <!-- ====================================================
-         SLIDE 9 — MÓDULO 1: DASHBOARD
+         SLIDE 10 — MÓDULO 1: RECOMENDACIONES
     ==================================================== -->
-    <section class="slide">
+    <section class="slide slide-compact">
       <div class="slide-content">
-        <span class="label label-blue">Módulo 1 · Dashboard</span>
-        <h2 class="sec-title">Dashboard interactivo</h2>
-        <p class="sec-sub">Visualización del funnel de conversión por producto y categoría en Looker Studio.</p>
+        <span class="label label-blue">Módulo 1 · Recomendaciones</span>
+        <h2 class="sec-title">Acciones recomendadas basadas en datos</h2>
+        <p class="sec-sub">Optimización de inversión publicitaria y estrategia de productos.</p>
 
-        <div class="dash-card">
-          <div class="dash-title">Product Performance Dashboard</div>
-          <p class="dash-desc">Funnel de conversión, análisis de categorías y comparativas de vistas vs. revenue. Responsive para mobile.</p>
-
-          <div class="dash-filters">
-            <span class="dash-chip" style="background:rgba(38,116,237,0.1);color:#60a5fa;border:1px solid rgba(38,116,237,0.2);">Filtro por categoría</span>
-            <span class="dash-chip" style="background:rgba(38,116,237,0.1);color:#60a5fa;border:1px solid rgba(38,116,237,0.2);">Filtro por fecha</span>
-            <span class="dash-chip" style="background:rgba(38,116,237,0.1);color:#60a5fa;border:1px solid rgba(38,116,237,0.2);">Fuente: GA4 · BigQuery</span>
-            <span class="dash-chip" style="background:rgba(38,116,237,0.1);color:#60a5fa;border:1px solid rgba(38,116,237,0.2);">Mobile friendly</span>
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+            <span style="width:36px;height:36px;border-radius:8px;background:rgba(248,113,113,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">❌</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:6px;">1. Redirigir inversión publicitaria</div>
+              <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">
+                Reducir presupuesto en categorías con <strong>tráfico alto pero cero revenue</strong> (Men's T-Shirts, Mugs, Sale, Clearance).
+              </p>
+              <div style="font-size:11px;padding:6px 10px;background:var(--surface);border-radius:6px;color:var(--text-secondary);">
+                📍 <strong>Implementar:</strong> Ajustar campañas de Google Ads y Meta Ads para desprioritizar estas categorías
+              </div>
+            </div>
           </div>
+        </div>
 
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+            <span style="width:36px;height:36px;border-radius:8px;background:rgba(74,222,128,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">✅</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:6px;">2. Priorizar categoría Apparel</div>
+              <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">
+                <strong>Apparel</strong> lidera en revenue pero tiene <strong>baja visibilidad</strong>. Alta oportunidad de crecimiento aumentando su exposición.
+              </p>
+              <div style="font-size:11px;padding:6px 10px;background:var(--surface);border-radius:6px;color:var(--text-secondary);">
+                📍 <strong>Implementar:</strong> Ubicar en homepage, activar pop-ups/banners, incluir en email marketing y stories
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+            <span style="width:36px;height:36px;border-radius:8px;background:rgba(251,191,36,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">⚠️</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:6px;">3. Optimizar período de fin de año</div>
+              <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">
+                Investigar causa del <strong>spike de tráfico sin conversión</strong> (26 dic - 17 ene). Posibles causas: productos agotados, problemas de checkout, audiencia incorrecta.
+              </p>
+              <div style="font-size:11px;padding:6px 10px;background:var(--surface);border-radius:6px;color:var(--text-secondary);">
+                📍 <strong>Implementar:</strong> A/B testing en landing pages durante próxima temporada
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-card" style="margin-top:20px;">
+          <div class="dash-title">Dashboard interactivo — Product Performance</div>
+          <p class="dash-desc">Funnel de conversión, análisis de categorías y comparativas de vistas vs. revenue.</p>
           <a href="https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7"
-             class="btn-p" target="_blank">
+             class="btn-p" target="_blank" rel="noopener noreferrer">
             Ver dashboard en línea →
           </a>
         </div>
@@ -817,7 +1121,7 @@ GROUP BY
     </section>
 
     <!-- ====================================================
-         SLIDE 10 — MÓDULO 2: PORTADA
+         SLIDE 11 — SEPARADOR MÓDULO 2
     ==================================================== -->
     <section class="slide">
       <div class="slide-content" style="position:relative;overflow:hidden;">
@@ -842,76 +1146,19 @@ GROUP BY
         </div>
 
         <p style="font-size:13px;color:var(--text-secondary);">
-          Datos simulados realistas de una tienda Shopify. El análisis es replicable a cualquier tienda
-          con la misma estructura de exportación de pedidos.
+          Datos simulados realistas de una tienda Shopify. El análisis es replicable a cualquier tienda con la misma estructura de exportación de pedidos. Se exploran <strong>6 dimensiones comerciales</strong>: ventas YoY, descuentos, categorías, cupones, tallas y geografía.
         </p>
       </div>
     </section>
 
     <!-- ====================================================
-         SLIDE 11 — MÓDULO 2: ALCANCE
+         SLIDE 12 — MÓDULO 2: ANÁLISIS DE DATOS (Pipeline)
     ==================================================== -->
     <section class="slide">
       <div class="slide-content">
-        <span class="label label-pink">Módulo 2 · Alcance</span>
-        <h2 class="sec-title">¿Qué se analiza?</h2>
-        <p class="sec-sub">Seis dimensiones comerciales exploradas a partir de los datos de órdenes de Shopify.</p>
-
-        <div class="g2" style="gap:10px;">
-          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
-            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-            <div>
-              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Ventas vs. año anterior</div>
-              <div style="font-size:12px;color:var(--text-secondary);">Comparativa temporal para detectar tendencias y anomalías de crecimiento o caída.</div>
-            </div>
-          </div>
-          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
-            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
-            <div>
-              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Impacto de descuentos</div>
-              <div style="font-size:12px;color:var(--text-secondary);">Ventas con y sin descuento. 8 rangos de descuento clasificados (desde sin descuento hasta &gt;70%).</div>
-            </div>
-          </div>
-          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
-            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg></span>
-            <div>
-              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Categorías de productos</div>
-              <div style="font-size:12px;color:var(--text-secondary);">Rendimiento por categoría: Short, Vestido, Unisex y más. ¿Cuáles lideran en volumen e ingresos?</div>
-            </div>
-          </div>
-          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
-            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
-            <div>
-              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Cupones promocionales</div>
-              <div style="font-size:12px;color:var(--text-secondary);">BIENVENIDA, SUERTE, CYBER — efectividad y segmentación por género y ciudad.</div>
-            </div>
-          </div>
-          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
-            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="4"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
-            <div>
-              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Tallas y género</div>
-              <div style="font-size:12px;color:var(--text-secondary);">Preferencias de talla por género para optimizar inventario y segmentación de campañas.</div>
-            </div>
-          </div>
-          <div class="card" style="padding:14px 18px;display:flex;gap:10px;align-items:flex-start;">
-            <span style="flex-shrink:0;color:var(--text-secondary);margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg></span>
-            <div>
-              <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Distribución geográfica</div>
-              <div style="font-size:12px;color:var(--text-secondary);">Ciudades con mayor concentración de pedidos para estrategias logísticas y campañas locales.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ====================================================
-         SLIDE 12 — MÓDULO 2: FLUJO DE DATOS
-    ==================================================== -->
-    <section class="slide">
-      <div class="slide-content">
-        <span class="label label-pink">Módulo 2 · Arquitectura de datos</span>
-        <h2 class="sec-title">Flujo de trabajo</h2>
-        <p class="sec-sub">Del CSV exportado de Shopify al dashboard interactivo en Looker Studio.</p>
+        <span class="label label-pink">Módulo 2 · Análisis de Datos</span>
+        <h2 class="sec-title">Flujo de transformación de datos</h2>
+        <p class="sec-sub">Del CSV de Shopify a tablas analíticas en BigQuery.</p>
 
         <div style="background:var(--surface);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
           <div class="pipeline">
@@ -951,38 +1198,56 @@ GROUP BY
 
         <div class="g2">
           <div class="card" style="padding:16px 18px;">
-            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:7px;">Tabla 1 · Órdenes</div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:7px;">Query 1 de 2 · Nivel Orden</div>
             <div class="mono-id" style="margin-top:0;margin-bottom:8px;">Shopify_Orders</div>
-            <p style="font-size:12px;color:var(--text-secondary);">Una fila por orden. ID, cliente, fecha, total, estado de pago, cupón, ciudad.</p>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
+              <strong>Propósito:</strong> Analizar órdenes completas (1 fila = 1 orden) con información de cliente, cupones, ciudad y totales.
+            </p>
+            <div style="font-size:11px;color:var(--text-secondary);">
+              Campos: order_id, cliente, fecha, total, estado_pago, cupón, ciudad
+            </div>
           </div>
           <div class="card" style="padding:16px 18px;">
-            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:7px;">Tabla 2 · Items</div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:7px;">Query 2 de 2 · Nivel Producto</div>
             <div class="mono-id" style="margin-top:0;margin-bottom:8px;">Shopify_Orders_Items</div>
-            <p style="font-size:12px;color:var(--text-secondary);">Una fila por producto. SKU, talla, precio, descuento, categoría, género.</p>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
+              <strong>Propósito:</strong> Analizar productos dentro de cada orden (1 fila = 1 producto) con tallas, descuentos, categorías y género. Preparado para futura conexión con API.
+            </p>
+            <div style="font-size:11px;color:var(--text-secondary);">
+              Campos: SKU, nombre, talla, precio, descuento, categoría, género
+            </div>
           </div>
         </div>
 
-        <div class="info-box" style="background:var(--surface);border:1px solid var(--border-light);">
-          → <strong>Próximo paso:</strong> Conexión directa con la API REST de Shopify para automatizar la recolección y eliminar el CSV manual.
+        <div style="margin-top:18px;padding:12px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);margin-bottom:8px;">6 dimensiones analizadas</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span style="font-size:10px;padding:4px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Ventas vs. año anterior</span>
+            <span style="font-size:10px;padding:4px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Impacto descuentos (8 rangos)</span>
+            <span style="font-size:10px;padding:4px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Categorías productos</span>
+            <span style="font-size:10px;padding:4px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Cupones promocionales</span>
+            <span style="font-size:10px;padding:4px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Tallas y género</span>
+            <span style="font-size:10px;padding:4px 8px;border-radius:4px;background:rgba(236,72,153,0.1);color:#f472b6;">Distribución geográfica</span>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ====================================================
-         SLIDE 13 — MÓDULO 2: SQL
+         SLIDE 13 — MÓDULO 2: ANÁLISIS DE DATOS (Query SQL)
     ==================================================== -->
     <section class="slide">
       <div class="slide-content">
-        <span class="label label-pink">Módulo 2 · SQL</span>
-        <h2 class="sec-title">Consulta — Shopify Orders Items</h2>
-        <p class="sec-sub">Extrae nombre, talla, género, categoría y clasifica descuentos en 8 rangos.</p>
+        <span class="label label-pink">Módulo 2 · Análisis de Datos</span>
+        <h2 class="sec-title">Consulta SQL — Items procesados</h2>
+        <p class="sec-sub">Extracción y clasificación de productos, tallas, género y descuentos.</p>
 
         <pre class="code-wrap"><code class="language-sql">SELECT
   DATE(`Created at`) AS date,
-  Name             AS order_id,
+  Name AS order_id,
 
   -- Extrae nombre del producto (todo antes del primer guión)
-  REGEXP_EXTRACT(`Lineitem name`, r'^(.*?) -')   AS lineitem_name,
+  REGEXP_EXTRACT(`Lineitem name`, r'^(.*?) -') AS lineitem_name,
 
   -- Extrae talla (último segmento en MAYÚSCULAS)
   REGEXP_EXTRACT(`Lineitem name`, r' - ([A-Z]+)$') AS lineitem_variant,
@@ -997,19 +1262,19 @@ GROUP BY
   -- Categoría: primera palabra del nombre
   REGEXP_EXTRACT(`Lineitem name`, r'^([^\s]+)') AS categoria,
 
-  ROUND(`Lineitem price`, 2)  AS lineitem_price,
+  ROUND(`Lineitem price`, 2) AS lineitem_price,
   COALESCE(ROUND(`Lineitem compare at price` - `Lineitem price`), 0) AS descuento,
 
   -- Clasifica el % de descuento en 8 rangos
   CASE
     WHEN (`Lineitem compare at price`-`Lineitem price`)
-         /`Lineitem compare at price`*100 &gt; 69 THEN 'Descuento mayor a 70%'
+         /`Lineitem compare at price`*100 > 69 THEN 'Descuento mayor a 70%'
     WHEN (`Lineitem compare at price`-`Lineitem price`)
-         /`Lineitem compare at price`*100 &gt; 49 THEN 'Descuento entre 50% y 70%'
+         /`Lineitem compare at price`*100 > 49 THEN 'Descuento entre 50% y 70%'
     WHEN (`Lineitem compare at price`-`Lineitem price`)
-         /`Lineitem compare at price`*100 &gt; 29 THEN 'Descuento entre 30% y 50%'
+         /`Lineitem compare at price`*100 > 29 THEN 'Descuento entre 30% y 50%'
     WHEN (`Lineitem compare at price`-`Lineitem price`)
-         /`Lineitem compare at price`*100 &gt;  9 THEN 'Descuento entre 10% y 30%'
+         /`Lineitem compare at price`*100 >  9 THEN 'Descuento entre 10% y 30%'
     ELSE 'Sin descuento'
   END AS range_discount
 
@@ -1024,13 +1289,13 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
     </section>
 
     <!-- ====================================================
-         SLIDE 14 — MÓDULO 2: ANÁLISIS & HALLAZGOS
+         SLIDE 14 — MÓDULO 2: RESULTADOS
     ==================================================== -->
     <section class="slide">
       <div class="slide-content">
-        <span class="label label-pink">Módulo 2 · Análisis & Hallazgos</span>
-        <h2 class="sec-title">Visualizaciones e Insights</h2>
-        <p class="sec-sub">Patrones encontrados en el rendimiento comercial del ecommerce Shopify.</p>
+        <span class="label label-pink">Módulo 2 · Resultados</span>
+        <h2 class="sec-title">Patrones comerciales identificados</h2>
+        <p class="sec-sub">Insights desde los datos de órdenes de Shopify.</p>
 
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;height:calc(100vh - 300px);min-height:0;">
 
@@ -1040,7 +1305,7 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
                    class="lightbox-trigger"
                    style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius) 0 0 var(--radius);display:block;"
                    alt="Ventas con cupones" loading="lazy">
-              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.1 · Ventas con cupones</div>
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">Ventas con cupones</div>
             </div>
             <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
               <div class="ibadge">1</div>
@@ -1056,7 +1321,7 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
                    class="lightbox-trigger"
                    style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius) 0 0 var(--radius);display:block;"
                    alt="Distribución por tallas" loading="lazy">
-              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.3 · Distribución por tallas</div>
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">Distribución por tallas</div>
             </div>
             <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
               <div class="ibadge">2</div>
@@ -1072,7 +1337,7 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
                    class="lightbox-trigger"
                    style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius) 0 0 var(--radius);display:block;"
                    alt="Categorías y demanda" loading="lazy">
-              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">4.4 · Categorías y género</div>
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:5px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.65));font-size:10px;color:rgba(255,255,255,0.8);font-weight:500;letter-spacing:0.3px;border-radius:0 0 0 var(--radius);">Categorías y género</div>
             </div>
             <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--border);">
               <div class="ibadge">3</div>
@@ -1084,7 +1349,7 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
 
         </div>
 
-        <div class="info-box" style="background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.2);">
+        <div class="info-box" style="background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.2);margin-top:8px;">
           ⚠️ <strong style="color:#f87171;">Alerta:</strong> Desde julio 2024 se detecta caída sostenida en ventas con descuento.
           Requiere revisión de la estrategia promocional para ese periodo.
         </div>
@@ -1092,30 +1357,163 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
     </section>
 
     <!-- ====================================================
-         SLIDE 16 — MÓDULO 2: DASHBOARD
+         SLIDE 15 — MÓDULO 2: RECOMENDACIONES
     ==================================================== -->
-    <section class="slide">
+    <section class="slide slide-compact">
       <div class="slide-content">
-        <span class="label label-pink">Módulo 2 · Dashboard</span>
-        <h2 class="sec-title">Dashboard interactivo</h2>
-        <p class="sec-sub">Análisis comercial completo en Looker Studio con filtros dinámicos.</p>
+        <span class="label label-pink">Módulo 2 · Recomendaciones</span>
+        <h2 class="sec-title">Acciones recomendadas basadas en datos</h2>
+        <p class="sec-sub">Optimización de cupones, inventario y estrategia promocional.</p>
 
-        <div class="dash-card" style="background:linear-gradient(135deg,rgba(236,72,153,0.05),rgba(124,58,237,0.05));border-color:rgba(236,72,153,0.25);">
-          <div class="dash-title">Ecommerce Analytics Comercial</div>
-          <p class="dash-desc">Descuentos, categorías, cupones, tallas y geografía. Filtros dinámicos por estado, categoría, género y nivel de descuento.</p>
-
-          <div class="dash-filters">
-            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Estado de pago</span>
-            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Categoría</span>
-            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Género</span>
-            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Tallas</span>
-            <span class="dash-chip" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">Nivel de descuento</span>
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+            <span style="width:36px;height:36px;border-radius:8px;background:rgba(74,222,128,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">🎯</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:6px;">1. Segmentar cupones por perfil</div>
+              <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">
+                Cupón <strong>BIENVENIDA</strong> funciona mejor en mujeres + Surco/Chorrillos. Crear cupones específicos por género y zona geográfica.
+              </p>
+              <div style="font-size:11px;padding:6px 10px;background:var(--surface);border-radius:6px;color:var(--text-secondary);">
+                📍 <strong>Implementar:</strong> Campañas de email marketing segmentadas por perfil demográfico y ubicación
+              </div>
+            </div>
           </div>
+        </div>
 
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+            <span style="width:36px;height:36px;border-radius:8px;background:rgba(251,191,36,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">📦</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:6px;">2. Gestión de inventario por talla</div>
+              <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">
+                Talla <strong>M es crítica</strong> en todos los géneros. Asegurar stock prioritario para evitar quiebres.
+              </p>
+              <div style="font-size:11px;padding:6px 10px;background:var(--surface);border-radius:6px;color:var(--text-secondary);">
+                📍 <strong>Implementar:</strong> Ajustar órdenes de compra con proveedores priorizando talla M
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+            <span style="width:36px;height:36px;border-radius:8px;background:rgba(248,113,113,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">📉</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:6px;">3. Analizar caída de ventas con descuento</div>
+              <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">
+                Desde <strong>julio 2024</strong> hay tendencia a la baja en productos con descuento. Investigar: cambios en estrategia, competencia, estacionalidad.
+              </p>
+              <div style="font-size:11px;padding:6px 10px;background:var(--surface);border-radius:6px;color:var(--text-secondary);">
+                📍 <strong>Implementar:</strong> Revisar campañas promocionales de ese período y ajustar estrategia
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+            <span style="width:36px;height:36px;border-radius:8px;background:rgba(74,222,128,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">💰</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:6px;">4. Aprovechar demanda orgánica</div>
+              <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">
+                El negocio <strong>NO depende de descuentos</strong> para vender. Oportunidad de mejorar márgenes reduciendo promociones excesivas.
+              </p>
+              <div style="font-size:11px;padding:6px 10px;background:var(--surface);border-radius:6px;color:var(--text-secondary);">
+                📍 <strong>Implementar:</strong> Testear reducción gradual de descuentos en categorías fuertes
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-card" style="margin-top:20px;background:linear-gradient(135deg,rgba(236,72,153,0.05),rgba(124,58,237,0.05));border-color:rgba(236,72,153,0.25);">
+          <div class="dash-title">Dashboard interactivo — Analytics Comercial</div>
+          <p class="dash-desc">Descuentos, categorías, cupones, tallas y geografía con filtros dinámicos.</p>
           <a href="https://lookerstudio.google.com/reporting/feceecaa-0ba9-4750-8b55-0ab20da5a5b8"
-             class="btn-p" target="_blank">
+             class="btn-p" target="_blank" rel="noopener noreferrer">
             Ver dashboard en línea →
           </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 16 — PRÓXIMOS PASOS
+    ==================================================== -->
+    <section class="slide slide-compact">
+      <div class="slide-content">
+        <span class="label label-grad">Evolución del Proyecto</span>
+        <h2 class="sec-title">Próximos pasos y <span class="gt">evolución</span></h2>
+        <p class="sec-sub">El proyecto no termina aquí — mejoras técnicas y nuevas capacidades planeadas.</p>
+
+        <div class="card" style="margin-bottom:16px;">
+          <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Mejoras técnicas planeadas</h3>
+
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--surface);border-radius:8px;margin-bottom:10px;">
+            <span style="font-size:20px;flex-shrink:0;">🔄</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:4px;">1. Automatización de datos</div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;">
+                ✅ Actual: Exportación manual CSV de Shopify<br>
+                🔜 Próximo: Conexión directa con API REST de Shopify
+              </div>
+              <div style="font-size:11px;padding:4px 8px;background:rgba(124,58,237,0.1);border-radius:4px;display:inline-block;color:var(--accent-mid);">
+                Beneficio: Actualización automática, elimina trabajo manual
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--surface);border-radius:8px;margin-bottom:10px;">
+            <span style="font-size:20px;flex-shrink:0;">⏱️</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:4px;">2. Datos en tiempo real</div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;">
+                ✅ Actual: Query GA4 con rango de fechas fijo<br>
+                🔜 Próximo: Implementar CURRENT_DATE() para actualización diaria automática
+              </div>
+              <div style="font-size:11px;padding:4px 8px;background:rgba(124,58,237,0.1);border-radius:4px;display:inline-block;color:var(--accent-mid);">
+                Beneficio: Dashboards siempre actualizados
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--surface);border-radius:8px;">
+            <span style="font-size:20px;flex-shrink:0;">🔗</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:4px;">3. Integración de módulos (mismo negocio)</div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;">
+                🔜 Cruzar datos de comportamiento (GA4) con datos transaccionales (Shopify) del <strong>mismo negocio</strong>
+              </div>
+              <div style="font-size:11px;padding:4px 8px;background:rgba(124,58,237,0.1);border-radius:4px;display:inline-block;color:var(--accent-mid);">
+                Impacto: Atribución completa del customer journey
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Nuevas capacidades de análisis</h3>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="ns">
+              <div class="ns-dot"></div>
+              <div style="font-size:12px;">Machine Learning: Predicción de demanda por producto/talla</div>
+            </div>
+            <div class="ns">
+              <div class="ns-dot"></div>
+              <div style="font-size:12px;">Detección automática de anomalías en ventas</div>
+            </div>
+            <div class="ns">
+              <div class="ns-dot"></div>
+              <div style="font-size:12px;">Segmentación inteligente de clientes (RFM + clustering)</div>
+            </div>
+            <div class="ns">
+              <div class="ns-dot"></div>
+              <div style="font-size:12px;">Análisis de cohortes y Customer Lifetime Value (CLV)</div>
+            </div>
+            <div class="ns">
+              <div class="ns-dot"></div>
+              <div style="font-size:12px;">Análisis de retención y churn</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1143,12 +1541,22 @@ FROM `prueba2-433703.dataset_shopify_orders_download.shopify_orders`</code></pre
           </div>
         </div>
 
-        <div class="info-box" style="background:var(--surface);border:1px solid var(--border);margin-bottom:14px;">
-          <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-secondary);">→ Próximos pasos técnicos</span><br>
-          <span style="font-size:12px;color:var(--text-secondary);margin-top:6px;display:block;">
-            · Conectar directamente con la API REST de Shopify para eliminar el CSV manual<br>
-            · Actualizar query de GA4 en tiempo real usando <code style="color:var(--text-secondary);font-size:11px;">CURRENT_DATE()</code> en lugar de fechas hardcodeadas
-          </span>
+        <div class="card" style="margin-bottom:14px;">
+          <h3 style="font-size:14px;font-weight:600;margin-bottom:10px;">Impacto esperado</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:200px;padding:10px;background:var(--surface);border-radius:8px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">💰 Mejor ROI</div>
+              <div style="font-size:11px;color:var(--text-secondary);">Inversión publicitaria optimizada</div>
+            </div>
+            <div style="flex:1;min-width:200px;padding:10px;background:var(--surface);border-radius:8px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">📈 Márgenes</div>
+              <div style="font-size:11px;color:var(--text-secondary);">Optimización comercial estratégica</div>
+            </div>
+            <div style="flex:1;min-width:200px;padding:10px;background:var(--surface);border-radius:8px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">📦 Inventario</div>
+              <div style="font-size:11px;color:var(--text-secondary);">Gestión basada en demanda real</div>
+            </div>
+          </div>
         </div>
 
         <div class="author-card">
