@@ -8,7 +8,7 @@ Este documento detalla el proceso técnico del análisis, incluyendo las fuentes
 
 | Plataforma | Tipo de fuente     | Granularidad        | Descripción                                                                                                                                                                                                                     | ID de tabla                                                        |
 |------------|--------------------|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
-| Shopify   | Ordenes (descarga csv) | orden por cliente  | tabla que contiene todas las órdenes generadas en una tienda de shopify | `prueba2-433703.dataset_shopify_orders_download.shopify_orders`     |
+| Shopify   | Ordenes (descarga csv) | orden por cliente  | tabla que contiene todas las órdenes generadas en una tienda de shopify | `datablog-datasets-360.shopify.shopify_orders`     |
 
 > 🔜 En una siguiente etapa, se conectará directamente con la API REST de Shopify para automatizar la recolección de datos y eliminar la dependencia de las exportaciones manuales.
 
@@ -31,7 +31,7 @@ Este documento detalla el proceso técnico del análisis, incluyendo las fuentes
 
 1. Se descargó manualmente un archivo `.csv` con las órdenes desde la plataforma de Shopify.
 2. Este archivo fue cargado como una tabla física en BigQuery, ubicada en la ruta:  
-   `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
+   `datablog-datasets-360.shopify.shopify_orders`
 3. A partir de esta tabla base se construyeron dos tablas procesadas (guardadas como vistas) mediante consultas SQL:
    - `Shopify_Orders`: tabla (vista) con un registro por orden.
    - `Shopify_Orders_Items`: tabla (vista) con un registro por producto vendido.
@@ -69,7 +69,7 @@ SELECT
    round(AVG(subtotal),2) AS subtotal,
    
 FROM
-  `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
+  `datablog-datasets-360.shopify.shopify_orders`
 GROUP BY
   DATE(`Created at`),
   EXTRACT(HOUR FROM `Created at`),
@@ -127,7 +127,7 @@ SELECT
   ) AS sin_descuento_items
 
 FROM
-  `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
+  `datablog-datasets-360.shopify.shopify_orders`
 ```
 
 

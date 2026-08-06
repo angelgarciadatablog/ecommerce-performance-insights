@@ -43,4 +43,4 @@ SELECT
   ) AS sin_descuento_items
 
 FROM
-  `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
+  `datablog-datasets-360.shopify.shopify_orders`

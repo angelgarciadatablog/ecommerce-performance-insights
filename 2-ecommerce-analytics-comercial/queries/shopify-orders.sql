@@ -20,7 +20,7 @@ SELECT
    round(AVG(subtotal),2) AS subtotal,
    
 FROM
-  `prueba2-433703.dataset_shopify_orders_download.shopify_orders`
+  `datablog-datasets-360.shopify.shopify_orders`
 GROUP BY
   DATE(`Created at`),
   EXTRACT(HOUR FROM `Created at`),
