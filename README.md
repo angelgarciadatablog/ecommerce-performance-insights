@@ -1,90 +1,77 @@
-# Ecommerce Performance Insights — Rendimiento de producto con GA4
+# Ecommerce Performance Insights — Auditoría de medición en GA4
 
-> ¿Los productos más vistos son los que generan mayores ingresos?
+> ¿Puede esta tienda saber qué productos convierten mejor, con la medición que tiene hoy?
 
-En una tienda con más de mil productos, la atención y el dinero no se reparten igual. Marketing decide dónde invertir mirando el tráfico, pero el tráfico no paga: paga la conversión.
+Un análisis sobre el export de GA4 de la Google Merchandise Store en BigQuery. No es un informe de ventas: es **una auditoría de la tabla de eventos** para averiguar qué preguntas de negocio se pueden responder con la medición existente y cuáles no.
 
-Este proyecto reconstruye el **ciclo completo de conversión por producto** —vistas, agregados al carrito, inicios de checkout y compras— a partir de los eventos de Google Analytics 4 procesados en BigQuery, para detectar productos con alta exposición y baja conversión, y oportunidades por categoría.
+La respuesta corta es que dos de las tres no se pueden, y el caso demuestra por qué.
 
 📄 **Caso completo:** [angelgarciadatablog.com/portafolio/ecommerce-performance-insights](https://www.angelgarciadatablog.com/portafolio/ecommerce-performance-insights)
-📈 **Dashboard:** [Ver en Looker Studio](https://lookerstudio.google.com/reporting/5e8d97c8-e7c4-4c62-93f5-0d7396d216d7)
 
 ---
 
-## 🗂 Fuente de datos
+## Fuente de datos
 
 | | |
 |---|---|
 | Origen | `bigquery-public-data.ga4_obfuscated_sample_ecommerce` |
-| Qué es | Export crudo de GA4 de la Google Merchandise Store. **Datos reales ofuscados**, publicados por Google como dataset de demostración |
+| Qué es | Export crudo de GA4 de la Google Merchandise Store, publicado por Google como dataset de demostración |
 | Periodo | 1 nov 2020 → 31 ene 2021 |
 | Volumen | 4,295,584 eventos · 17 tipos de evento · 270,154 usuarios |
 | Estructura | 92 tablas diarias (`events_20201101` … `events_20210131`) |
-| Grano | Un evento por fila, con los productos anidados en un `ARRAY` |
+| Documentación | [Dataset de demostración de ecommerce](https://developers.google.com/analytics/bigquery/web-ecommerce-demo-dataset?hl=es-419) |
 
-Es un **dataset público de demostración, no un cliente**. Los hallazgos son reales sobre esa tienda, pero el proyecto demuestra método, no una consultoría entregada.
-
-📚 [Documentación oficial del dataset](https://developers.google.com/analytics/bigquery/web-ecommerce-demo-dataset?hl=es-419)
-
-Al ser público, **cualquiera puede reproducir el análisis completo** ejecutando las consultas de [`queries/`](queries/). No hace falta acceso a ningún dato privado.
+Es un dataset público. Todo el análisis es reproducible sin acceso a ningún dato privado.
 
 ---
 
-## 🛠️ Herramientas
+## Qué encontró la auditoría
 
-- **Google Analytics 4** — métricas de comportamiento de usuarios
-- **BigQuery** — almacenamiento y transformación
-- **SQL** — extracción y modelado
-- **Looker Studio** — visualización
+Once comprobaciones sobre la tabla de eventos. Las que cambiaron el resultado:
 
----
-
-## 🧠 Lo interesante: el export de GA4 no se puede analizar tal como viene
-
-Cada fila es un evento y los productos viven anidados dentro. Un solo evento de compra puede contener cinco productos distintos.
-
-1. **Desanidar** el array `items` con `UNNEST`, para pasar de "un evento" a "un producto dentro de un evento".
-2. **Convertir eventos en métricas** con `CASE WHEN event_name = …` + `SUM`. Ahí aparece el embudo: cada etapa es un nombre de evento distinto sobre la misma fila.
-3. **Recorrer las 92 tablas diarias** con `_TABLE_SUFFIX` en vez de apuntar a una tabla fija.
-4. **Materializar el resultado** en una tabla maestra de 51,030 filas con grano producto × día.
-
-El paso 4 es la decisión de arquitectura más importante: sin ella, cada filtro del dashboard vuelve a escanear millones de eventos, con el coste y la latencia que eso implica.
+| Hallazgo | Consecuencia |
+|---|---|
+| **`view_item` no mide vistas de producto.** Un evento trae doce productos o ninguno; solo el 2% trae uno | Bloquea cualquier conversión por producto |
+| **`item_id` no identifica productos.** 416 de 429 tienen varios identificadores, uno llega a catorce | La clave del análisis pasa a ser `item_name` |
+| **`item_category` guarda dos cosas distintas** con el mismo nombre: la ruta de navegación en `view_item`, la categoría del catálogo en `purchase` | La categoría solo se toma de la mitad baja del embudo |
+| **El evento de compra se duplica.** 5,692 eventos para 4,466 transacciones | Todo ingreso hay que deduplicar por `transaction_id` |
+| 8 productos aparecen comprados sin haberse visto nunca | 645 compras sin producto atribuible |
+| 31 productos no tienen categoría en ningún evento | El análisis por categoría cubre 390 de 421 |
 
 ---
 
-## 🧭 Hallazgos clave
+## Qué se puede responder y qué no
 
-1. **Vistas que no convierten durante la campaña.** Entre el 26 de diciembre y el 17 de enero las vistas de producto subieron con fuerza, sin subida proporcional en ventas.
-2. **Categorías con mucho tráfico y cero ingresos.** Men's T-Shirts, Mug, Sale, Clearance, Eco-friendly, Small goods y Backpacks están en el top 10 de más vistos y no generan ingresos.
-3. **La categoría más rentable no es la más vista.** Apparel lidera en ingresos pero no en vistas: genera el dinero desde una posición de baja exposición.
-
-El análisis paso a paso está en [`analysis/product-performance-insight-analysis.md`](analysis/product-performance-insight-analysis.md).
-
----
-
-## 🗂️ Estructura
-
-```plaintext
-ecommerce-performance-insights/
-├── README.md
-├── analysis/     # desarrollo, lógica y hallazgos
-├── queries/      # consultas SQL (GA4 + BigQuery)
-├── images/       # soporte visual
-└── dashboard/    # documentación de la visualización
-```
+| Pregunta de negocio | ¿Se responde? |
+|---|---|
+| ¿Cuál es la conversión del negocio? | Sí — 1.35% de las sesiones |
+| ¿Qué productos facturan más? | Sí |
+| ¿Qué categorías facturan más? | Sí, sobre 390 de 421 productos |
+| ¿Qué productos convierten mejor? | **No** — falta el denominador |
+| ¿Qué categoría convierte mejor? | **No** — mismo motivo |
 
 ---
 
-## 📜 Historia
+## Qué habría que arreglar en la medición
 
-Hasta agosto de 2026 este repo alojaba dos módulos: este análisis de GA4 y un análisis comercial sobre datos ficticios de Shopify. Se separaron porque **no comparten fuente, periodo ni negocio** —uno usa datos reales ofuscados de Google entre 2020 y 2021, el otro datos simulados entre 2023 y 2024— y tenerlos juntos bajo este nombre sugería que analizaban el mismo ecommerce.
+1. Disparar `view_item` en la ficha de producto, con ese producto en `items`
+2. Mandar las parrillas de categoría como `view_item_list`
+3. Usar el mismo identificador de producto en las cuatro etapas del embudo
+4. Separar la categoría del catálogo de la ruta de navegación en dos campos
 
-El módulo de Shopify vive ahora en [angelgarciadatablog/shopify-orders-analysis](https://github.com/angelgarciadatablog/shopify-orders-analysis), con su historial de commits intacto.
+Con los dos primeros, las cinco preguntas de arriba tendrían respuesta.
 
 ---
 
-## 👤 Autor
+## Sobre este repositorio
 
-**Angel García**
-Analista de Datos | Lima, Perú
-🔗 [LinkedIn](https://www.linkedin.com/in/angelgarciachanga) · 🎥 [@angelgarciadatablog](https://youtube.com/@angelgarciadatablog)
+**Las consultas SQL están en la página del caso**, no aquí. Son cortas y se leen mejor junto al razonamiento que las justifica; duplicarlas en el repo solo crearía dos versiones que se desincronizan.
+
+Este repositorio guarda lo que no cabe en la página: scripts largos, datos de origen y material de apoyo.
+
+---
+
+## Autor
+
+**Angel García** — Analista de Datos, Lima, Perú
+[LinkedIn](https://www.linkedin.com/in/angelgarciachanga) · [@angelgarciadatablog](https://youtube.com/@angelgarciadatablog)
